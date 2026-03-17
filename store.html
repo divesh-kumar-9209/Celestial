@@ -3,7 +3,14 @@
 <head>
 
 <title>Celestial Vault</title>
+<div class="fixed top-4 right-4 z-50">
 
+<button onclick="changeRole()"
+class="bg-purple-600 px-4 py-2 rounded-lg shadow-lg hover:scale-110 transition">
+Switch Role
+</button>
+
+</div>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -93,6 +100,16 @@ Sapphire
 
 <canvas id="spaceCanvas"></canvas>
 
+<div id="toast"
+class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none transition duration-500">
+
+<div class="bg-gradient-to-r from-purple-600 to-indigo-700 px-6 py-4 rounded-xl shadow-2xl text-center animate-pulse">
+
+<p id="toastText" class="text-white font-semibold"></p>
+
+</div>
+
+</div>
 <!-- HEADER -->
 <div class="relative z-10 text-center pt-10 pb-6 px-4">
 
@@ -251,7 +268,7 @@ actor: USER_TYPE
 });
 
 /* POPUP */
-alert(message);
+showToast(message);
 
 /* REFRESH */
 loadLedger();
@@ -278,7 +295,7 @@ p-4 md:p-5 rounded-xl flex flex-col md:flex-row justify-between items-start md:i
 transition hover:border-purple-400 hover:scale-[1.02]">
 
 <span class="text-gray-200 text-sm md:text-lg">
-${p.message || "Unknown action"}
+${p.message ? p.message : `Legacy record (ID: ${p.reward_id})`}
 </span>
 
 <span class="text-gray-400 text-xs md:text-sm">
@@ -387,6 +404,28 @@ requestAnimationFrame(animate);
 }
 
 animate();
+
+function changeRole(){
+localStorage.removeItem("userType");
+location.reload();
+}
+
+function showToast(message){
+
+const toast = document.getElementById("toast");
+const text = document.getElementById("toastText");
+
+text.innerText = message;
+
+toast.style.opacity = "1";
+toast.style.transform = "translate(-50%, 0) scale(1.05)";
+
+setTimeout(()=>{
+toast.style.opacity = "0";
+toast.style.transform = "translate(-50%, -20px) scale(0.9)";
+}, 2500);
+
+}
 
 </script>
 
