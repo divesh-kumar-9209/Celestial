@@ -1,23 +1,247 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Celestial Portal</title>
-  <link rel="stylesheet" href="style.css">
+
+<title>Celestial Portal</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+#spaceCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:0;
+pointer-events:none;
+}
+
+body{
+background:linear-gradient(140deg,#020617,#1e1b4b,#020617,#4c1d95);
+background-size:400% 400%;
+animation:cosmic 30s ease infinite;
+overflow-x:hidden;
+touch-action:none;
+}
+
+@keyframes cosmic{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+@keyframes float{
+0%{transform:translateY(0px);}
+50%{transform:translateY(-12px);}
+100%{transform:translateY(0px);}
+}
+
+@keyframes glow{
+0%{box-shadow:0 0 10px #7dd3fc;}
+50%{box-shadow:0 0 40px #c084fc;}
+100%{box-shadow:0 0 10px #7dd3fc;}
+}
+
+@keyframes shine{
+0%{transform:translateX(-100%);}
+100%{transform:translateX(300%);}
+}
+
+.titleGlow{
+text-shadow:
+0 0 15px rgba(125,211,252,0.9),
+0 0 50px rgba(192,132,252,0.8);
+}
+
+</style>
+
 </head>
-<body>
 
-  <h1>Celestial System</h1>
+<body class="text-white min-h-screen">
 
-  <button onclick="go('garnet.html')">Garnet</button>
-  <button onclick="go('sapphire.html')">Sapphire</button>
-  <button onclick="go('store.html')">Store</button>
-  <button onclick="go('admin.html')">Admin</button>
+<canvas id="spaceCanvas"></canvas>
 
-  <script>
-    function go(page) {
-      window.location.href = page;
-    }
-  </script>
+<!-- HEADER -->
+<div class="relative z-10 flex flex-col items-center justify-center pt-16 pb-10 px-4">
+
+<h1 class="text-3xl md:text-5xl font-bold text-cyan-300 tracking-widest titleGlow">
+Celestial Portal
+</h1>
+
+<p class="text-purple-300 mt-3 text-sm md:text-lg">
+Choose Your Realm of Power
+</p>
+
+</div>
+
+<!-- CARDS -->
+<div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12 px-6 md:px-16 pb-24">
+
+<!-- Garnet -->
+<a href="garnet.html"
+class="relative group bg-red-500/10 backdrop-blur-xl border border-red-400/30
+p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-red-400
+shadow-xl hover:shadow-red-400/40 animate-[float_6s_ease-in-out_infinite] text-center">
+
+<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
+style="animation: glow 2s infinite;"></div>
+
+<h2 class="text-xl font-semibold text-red-300 mb-3">Garnet Core</h2>
+
+<p class="text-gray-300 text-sm">Harness raw energy power</p>
+
+</a>
+
+<!-- Sapphire -->
+<a href="sapphire.html"
+class="relative group bg-blue-500/10 backdrop-blur-xl border border-blue-400/30
+p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-blue-400
+shadow-xl hover:shadow-blue-400/40 animate-[float_6s_ease-in-out_infinite] text-center">
+
+<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
+style="animation: glow 2s infinite;"></div>
+
+<h2 class="text-xl font-semibold text-blue-300 mb-3">Sapphire Chamber</h2>
+
+<p class="text-gray-300 text-sm">Channel refined energy</p>
+
+</a>
+
+<!-- Store -->
+<a href="store.html"
+class="relative group bg-purple-500/10 backdrop-blur-xl border border-purple-400/30
+p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-purple-400
+shadow-xl hover:shadow-purple-400/40 animate-[float_6s_ease-in-out_infinite] text-center">
+
+<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
+style="animation: glow 2s infinite;"></div>
+
+<h2 class="text-xl font-semibold text-purple-300 mb-3">Celestial Vault</h2>
+
+<p class="text-gray-300 text-sm">Acquire powerful artifacts</p>
+
+</a>
+
+<!-- Admin -->
+<a href="admin.html"
+class="relative group bg-green-500/10 backdrop-blur-xl border border-green-400/30
+p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-green-400
+shadow-xl hover:shadow-green-400/40 animate-[float_6s_ease-in-out_infinite] text-center">
+
+<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
+style="animation: glow 2s infinite;"></div>
+
+<h2 class="text-xl font-semibold text-green-300 mb-3">Admin Panel</h2>
+
+<p class="text-gray-300 text-sm">Control the system</p>
+
+</a>
+
+</div>
+
+<script>
+
+/* ================= CANVAS ================= */
+
+const canvas=document.getElementById("spaceCanvas");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+let mouse={x:null,y:null};
+
+window.addEventListener("mousemove",e=>{
+mouse.x=e.clientX;
+mouse.y=e.clientY;
+});
+
+window.addEventListener("touchmove",e=>{
+let t=e.touches[0];
+mouse.x=t.clientX;
+mouse.y=t.clientY;
+});
+
+/* stars */
+
+class Star{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.vx=(Math.random()-0.5)*0.2;
+this.vy=(Math.random()-0.5)*0.2;
+this.size=Math.random()*2+1;
+}
+update(){this.x+=this.vx;this.y+=this.vy;}
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+ctx.fillStyle="rgba(125,211,252,0.9)";
+ctx.shadowBlur=8;
+ctx.fill();
+}
+}
+
+let stars=[];
+for(let i=0;i<140;i++) stars.push(new Star());
+
+function connectStars(){
+for(let a=0;a<stars.length;a++){
+for(let b=a;b<stars.length;b++){
+let dx=stars[a].x-stars[b].x;
+let dy=stars[a].y-stars[b].y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<120){
+ctx.strokeStyle="rgba(192,132,252,"+(1-dist/120)+")";
+ctx.beginPath();
+ctx.moveTo(stars[a].x,stars[a].y);
+ctx.lineTo(stars[b].x,stars[b].y);
+ctx.stroke();
+}
+}
+}
+}
+
+function mouseConstellation(){
+stars.forEach(star=>{
+let dx=star.x-mouse.x;
+let dy=star.y-mouse.y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<150){
+ctx.beginPath();
+ctx.moveTo(star.x,star.y);
+ctx.lineTo(mouse.x,mouse.y);
+ctx.strokeStyle="rgba(236,72,153,0.7)";
+ctx.stroke();
+}
+});
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+stars.forEach(s=>{
+s.update();
+s.draw();
+});
+
+connectStars();
+mouseConstellation();
+
+requestAnimationFrame(animate);
+}
+
+animate();
+
+</script>
 
 </body>
 </html>
