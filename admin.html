@@ -11,39 +11,75 @@
 
 </head>
 
-<body class="bg-black text-white min-h-screen p-4 md:p-10">
+<body class="bg-black text-white min-h-screen p-10">
 
-<h1 class="text-2xl md:text-3xl font-bold mb-10">
+<h1 class="text-3xl font-bold mb-10">
 Admin Panel
 </h1>
 
 <!-- USERS -->
 
-<h2 class="text-lg md:text-xl mb-4">Users</h2>
+<h2 class="text-xl mb-4">Users</h2>
 
-<div class="overflow-x-auto mb-10">
-<table class="w-full text-sm md:text-base">
+<table class="w-full mb-10">
 
-<thead>
 <tr class="text-left border-b border-gray-700">
 <th>Name</th>
-<th>Garnet</th>
+<th>Points</th>
 <th>Add</th>
 <th>Remove</th>
 <th>Reset</th>
 </tr>
-</thead>
 
-<tbody id="usersTable"></tbody>
+<tr class="border-b border-gray-800">
+
+<td>Sapphire</td>
+<td id="sapphirePoints">0</td>
+
+<td>
+<input id="addSapphire" placeholder="points" class="text-black w-20">
+<button onclick="addPoints('sapphire')" class="bg-green-600 px-2 py-1">Add</button>
+</td>
+
+<td>
+<input id="removeSapphire" placeholder="points" class="text-black w-20">
+<button onclick="removePoints('sapphire')" class="bg-red-600 px-2 py-1">Remove</button>
+</td>
+
+<td>
+<button onclick="resetPoints('sapphire')" class="bg-yellow-600 px-2 py-1">Reset</button>
+</td>
+
+</tr>
+
+<tr class="border-b border-gray-800">
+
+<td>Garnet</td>
+<td id="garnetPoints">0</td>
+
+<td>
+<input id="addGarnet" placeholder="points" class="text-black w-20">
+<button onclick="addPoints('garnet')" class="bg-green-600 px-2 py-1">Add</button>
+</td>
+
+<td>
+<input id="removeGarnet" placeholder="points" class="text-black w-20">
+<button onclick="removePoints('garnet')" class="bg-red-600 px-2 py-1">Remove</button>
+</td>
+
+<td>
+<button onclick="resetPoints('garnet')" class="bg-yellow-600 px-2 py-1">Reset</button>
+</td>
+
+</tr>
 
 </table>
-</div>
 
 <!-- ADD REWARD -->
 
-<h2 class="text-lg md:text-xl mb-4">Add Reward</h2>
+<h2 class="text-xl mb-4">Add Reward</h2>
 
-<div class="mb-10 flex flex-col md:flex-row gap-4">
+<div class="mb-10 flex gap-4">
 
 <input id="title" placeholder="Title" class="text-black p-2">
 <input id="description" placeholder="Description" class="text-black p-2">
@@ -57,17 +93,19 @@ Add
 
 <!-- REWARD LIST -->
 
-<h2 class="text-lg md:text-xl mb-4">Rewards</h2>
+<h2 class="text-xl mb-4">Rewards</h2>
 
 <div id="rewardsList"></div>
 
-<button onclick="deleteAllRewards()" class="bg-red-700 px-4 py-2 mt-4">
+<div class="mt-4">
+<button onclick="deleteAllRewards()" class="bg-red-700 px-4 py-2">
 Delete All Rewards
 </button>
+</div>
 
 <!-- PURCHASE HISTORY -->
 
-<h2 class="text-lg md:text-xl mt-12 mb-4">Purchase History</h2>
+<h2 class="text-xl mt-12 mb-4">Purchase History</h2>
 
 <div id="purchaseList"></div>
 
@@ -80,86 +118,65 @@ const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const USER_ID = 1;
-/* ================= LOAD USERS ================= */
+/* ================= LOAD POINTS ================= */
 
-async function loadUsers(){
+async function loadPoints(){
 
-let { data } = await client.from("users_data").select("*");
+let { data } = await client
+.from("users_data")
+.select("*")
+.eq("id", USER_ID)
+.single();
 
-let table = document.getElementById("usersTable");
-table.innerHTML = "";
-
-data.forEach(u => {
-
-table.innerHTML += `
-<tr class="border-b border-gray-800">
-
-<td>${u.id}</td>
-
-<td>${u.garnet}</td>
-
-<td>
-<input id="add-${u.id}" class="text-black w-16">
-<button onclick="addPoints(${u.id})" class="bg-green-600 px-2 py-1">Add</button>
-</td>
-
-<td>
-<input id="remove-${u.id}" class="text-black w-16">
-<button onclick="removePoints(${u.id})" class="bg-red-600 px-2 py-1">Remove</button>
-</td>
-
-<td>
-<button onclick="resetPoints(${u.id})" class="bg-yellow-600 px-2 py-1">Reset</button>
-</td>
-
-</tr>
-`;
-
-});
+document.getElementById("garnetPoints").innerText = data.garnet;
+document.getElementById("sapphirePoints").innerText = data.sapphire;
 
 }
 
-loadUsers();
+loadPoints();
 
-/* ================= POINTS FUNCTIONS ================= */
+/* ================= POINT FUNCTIONS ================= */
 
-async function addPoints(id){
+async function addPoints(type){
 
-let val = parseInt(document.getElementById(`add-${id}`).value);
+let val = parseInt(document.getElementById(`add${capitalize(type)}`).value);
 
-let { data } = await client.from("users_data").select("*").eq("id",id).single();
+let { data } = await client.from("users_data").select("*").eq("id", USER_ID).single();
 
 await client.from("users_data").update({
-garnet: data.garnet + val
-}).eq("id",id);
+[type]: data[type] + val
+}).eq("id", USER_ID);
 
-loadUsers();
+loadPoints();
 
 }
 
-async function removePoints(id){
+async function removePoints(type){
 
-let val = parseInt(document.getElementById(`remove-${id}`).value);
+let val = parseInt(document.getElementById(`remove${capitalize(type)}`).value);
 
-let { data } = await client.from("users_data").select("*").eq("id",id).single();
+let { data } = await client.from("users_data").select("*").eq("id", USER_ID).single();
 
 await client.from("users_data").update({
-garnet: Math.max(0, data.garnet - val)
-}).eq("id",id);
+[type]: Math.max(0, data[type] - val)
+}).eq("id", USER_ID);
 
-loadUsers();
+loadPoints();
 
 }
 
-async function resetPoints(id){
+async function resetPoints(type){
 
 await client.from("users_data").update({
-garnet: 0,
-sapphire: 0
-}).eq("id",id);
+[type]: 0
+}).eq("id", USER_ID);
 
-loadUsers();
+loadPoints();
 
+}
+
+function capitalize(str){
+return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /* ================= REWARDS ================= */
@@ -176,7 +193,7 @@ data.forEach(r => {
 container.innerHTML += `
 <div class="flex justify-between border-b border-gray-700 py-2">
 
-<span>${r.title} (${r.cost})</span>
+<span>${r.title} (${r.cost} points)</span>
 
 <button onclick="deleteReward(${r.id})" class="text-red-500">
 Delete
@@ -206,24 +223,23 @@ loadRewards();
 }
 
 async function deleteReward(id){
-
 await client.from("rewards").delete().eq("id",id);
 loadRewards();
-
 }
 
 async function deleteAllRewards(){
-
 await client.from("rewards").delete().neq("id",0);
 loadRewards();
-
 }
 
-/* ================= PURCHASES ================= */
+/* ================= PURCHASE HISTORY ================= */
 
 async function loadPurchases(){
 
-let { data } = await client.from("purchases").select("*");
+let { data } = await client
+.from("purchases")
+.select("*")
+.order("created_at", { ascending: false });
 
 let container = document.getElementById("purchaseList");
 container.innerHTML = "";
@@ -233,7 +249,9 @@ data.forEach(p => {
 container.innerHTML += `
 <div class="flex justify-between border-b border-gray-800 py-3">
 
-<span>User ${p.user_id} purchased item ${p.reward_id}</span>
+<span>
+User purchased item ${p.reward_id}
+</span>
 
 <div class="flex gap-4">
 
@@ -257,10 +275,8 @@ Delete
 loadPurchases();
 
 async function deletePurchase(id){
-
 await client.from("purchases").delete().eq("id",id);
 loadPurchases();
-
 }
 
 </script>
