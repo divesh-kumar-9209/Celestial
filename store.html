@@ -35,27 +35,25 @@ touch-action:none;
 100%{background-position:0% 50%;}
 }
 
-@keyframes float{
-0%{transform:translateY(0px);}
-50%{transform:translateY(-12px);}
-100%{transform:translateY(0px);}
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.9);
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
 }
 
-@keyframes glow{
-0%{box-shadow:0 0 5px #facc15;}
-50%{box-shadow:0 0 30px #facc15;}
-100%{box-shadow:0 0 5px #facc15;}
-}
-
-@keyframes shine{
-0%{transform:translateX(-100%);}
-100%{transform:translateX(300%);}
-}
-
-.titleGlow{
-text-shadow:
-0 0 12px rgba(125,211,252,0.8),
-0 0 40px rgba(192,132,252,0.7);
+.modal-box{
+background:rgba(20,20,40,0.9);
+border:1px solid rgba(255,255,255,0.1);
+padding:30px;
+border-radius:20px;
+text-align:center;
 }
 
 </style>
@@ -64,23 +62,21 @@ text-shadow:
 
 <body class="text-white min-h-screen">
 
+<!-- 🔥 USER SELECT MODAL -->
+<div id="userModal" class="modal">
 
-<div id="rolePopup" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
+<div class="modal-box">
 
-<div class="bg-purple-900/40 backdrop-blur-xl border border-purple-400/40 p-8 rounded-2xl text-center shadow-xl">
-
-<h2 class="text-2xl font-bold text-cyan-300 mb-6">
-Choose Your Form
-</h2>
+<h2 class="text-2xl mb-6">Choose Your Energy</h2>
 
 <div class="flex gap-6 justify-center">
 
-<button onclick="selectRole('garnet')"
+<button onclick="selectUser('garnet')"
 class="bg-red-600 px-6 py-3 rounded-lg hover:scale-110 transition">
 Garnet
 </button>
 
-<button onclick="selectRole('sapphire')"
+<button onclick="selectUser('sapphire')"
 class="bg-blue-600 px-6 py-3 rounded-lg hover:scale-110 transition">
 Sapphire
 </button>
@@ -91,31 +87,26 @@ Sapphire
 
 </div>
 
-
 <canvas id="spaceCanvas"></canvas>
 
 <!-- HEADER -->
 <div class="relative z-10 text-center pt-10 pb-6 px-4">
 
-<h1 class="text-3xl md:text-5xl font-bold text-cyan-300 tracking-widest titleGlow">
+<h1 class="text-3xl md:text-5xl font-bold text-cyan-300">
 Celestial Vault
 </h1>
-
-<p class="text-purple-300 mt-2 text-sm md:text-lg">
-Where Energy Becomes Power
-</p>
 
 </div>
 
 <!-- REWARDS -->
 <div id="rewardsContainer"
-class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 px-4 md:px-12 pb-20">
+class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 px-4 pb-20">
 </div>
 
 <!-- LEDGER -->
-<div class="relative z-10 px-4 md:px-12 pb-20">
+<div class="relative z-10 px-4 pb-20">
 
-<h2 class="text-xl md:text-3xl font-bold mb-6 text-cyan-300">
+<h2 class="text-xl md:text-3xl mb-6 text-cyan-300">
 Energy Ledger
 </h2>
 
@@ -125,27 +116,29 @@ Energy Ledger
 
 <script>
 
-let USER_TYPE = localStorage.getItem("userType");
-
-/* SHOW POPUP IF NOT SELECTED */
-window.onload = () => {
-  if(!USER_TYPE){
-    document.getElementById("rolePopup").style.display = "flex";
-  } else {
-    document.getElementById("rolePopup").style.display = "none";
-  }
-};
-
 /* ================= SUPABASE ================= */
 
 const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OTIzNjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4";
+const SUPABASE_KEY = "YOUR_KEY";
 
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const USER_ID = 1;
 
-/* 🔥 USER TYPE DETECT */
-const USER_TYPE = localStorage.getItem("userType") || "garnet";
+/* ================= USER SELECT ================= */
+
+let USER_TYPE = localStorage.getItem("userType");
+
+if(!USER_TYPE){
+document.getElementById("userModal").style.display = "flex";
+}else{
+document.getElementById("userModal").style.display = "none";
+}
+
+function selectUser(type){
+USER_TYPE = type;
+localStorage.setItem("userType", type);
+document.getElementById("userModal").style.display = "none";
+}
 
 /* ================= LOAD REWARDS ================= */
 
@@ -159,35 +152,15 @@ container.innerHTML = "";
 data.forEach(r => {
 
 container.innerHTML += `
-<div class="relative group bg-purple-500/10 backdrop-blur-xl border border-purple-400/30
-p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-purple-400
-shadow-xl hover:shadow-purple-400/40 animate-[float_6s_ease-in-out_infinite]">
+<div class="bg-purple-500/10 backdrop-blur p-6 rounded-xl border border-purple-400">
 
-<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
-style="animation: glow 2s infinite;"></div>
-
-<h2 class="text-xl font-semibold mb-2 text-purple-300">
-${r.title}
-</h2>
-
-<p class="text-gray-300 mb-4 text-sm">
-${r.description || ""}
-</p>
-
-<p class="text-cyan-300 font-semibold mb-4">
-Energy Cost: ${r.cost}
-</p>
+<h2 class="text-xl mb-2">${r.title}</h2>
+<p class="text-sm mb-2">${r.description || ""}</p>
+<p class="mb-3">Cost: ${r.cost}</p>
 
 <button onclick="buyItem(${r.id}, ${r.cost})"
-class="relative overflow-hidden bg-gradient-to-r from-purple-500 to-indigo-600
-px-4 py-2 rounded-lg w-full font-semibold tracking-wide
-hover:scale-105 transition shadow-lg">
-
-Acquire Artifact
-
-<span class="absolute top-0 left-0 w-20 h-full bg-white/30 skew-x-12"
-style="animation: shine 2s infinite;"></span>
-
+class="bg-purple-600 px-4 py-2 rounded">
+Acquire
 </button>
 
 </div>
@@ -203,40 +176,38 @@ loadRewards();
 
 async function buyItem(id, cost){
 
+if(!USER_TYPE){
+alert("Select energy first");
+return;
+}
+
 let { data:user } = await client
 .from("users_data")
 .select("*")
 .eq("id", USER_ID)
 .single();
 
-/* 🔥 CHECK BASED ON USER TYPE */
 if(user[USER_TYPE] < cost){
 alert("Not enough energy");
 return;
 }
 
-/* GET REWARD */
 let { data:reward } = await client
 .from("rewards")
 .select("*")
 .eq("id", id)
 .single();
 
-/* TIME */
 let time = new Date().toLocaleString();
 
-/* NAME FIX */
 let actorName = USER_TYPE === "garnet" ? "Garnet" : "Sapphire";
 
-/* MESSAGE */
 let message = `${actorName} manifested ${reward.title} at ${time}`;
 
-/* UPDATE POINTS */
 await client.from("users_data").update({
 [USER_TYPE]: user[USER_TYPE] - cost
 }).eq("id", USER_ID);
 
-/* SAVE HISTORY */
 await client.from("purchases").insert({
 user_id: USER_ID,
 reward_id: id,
@@ -245,10 +216,8 @@ message: message,
 actor: USER_TYPE
 });
 
-/* POPUP */
 alert(message);
 
-/* REFRESH */
 loadLedger();
 
 }
@@ -268,17 +237,10 @@ container.innerHTML = "";
 data.forEach(p => {
 
 container.innerHTML += `
-<div class="bg-gray-900/60 backdrop-blur border border-purple-700
-p-4 md:p-5 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center
-transition hover:border-purple-400 hover:scale-[1.02]">
+<div class="bg-gray-900 p-4 rounded">
 
-<span class="text-gray-200 text-sm md:text-lg">
-${p.message || "Unknown action"}
-</span>
-
-<span class="text-gray-400 text-xs md:text-sm">
-${new Date(p.created_at).toLocaleString()}
-</span>
+<p>${p.message}</p>
+<p class="text-gray-400 text-sm">${new Date(p.created_at).toLocaleString()}</p>
 
 </div>
 `;
@@ -289,12 +251,6 @@ ${new Date(p.created_at).toLocaleString()}
 
 loadLedger();
 
-function selectRole(role){
-  USER_TYPE = role;
-  localStorage.setItem("userType", role);
-  document.getElementById("rolePopup").style.display = "none";
-}
-actor: USER_TYPE
 </script>
 
 </body>
