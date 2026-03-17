@@ -116,140 +116,33 @@ Energy Ledger
 
 <script>
 
-/* ================= SUPABASE ================= */
-
-const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
-const SUPABASE_KEY = "YOUR_KEY";
-
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const USER_ID = 1;
-
-/* ================= USER SELECT ================= */
+/* ================= USER TYPE ================= */
 
 let USER_TYPE = localStorage.getItem("userType");
 
-if(!USER_TYPE){
-document.getElementById("userModal").style.display = "flex";
-}else{
-document.getElementById("userModal").style.display = "none";
+/* SHOW POPUP */
+window.onload = () => {
+  if(!USER_TYPE){
+    document.getElementById("rolePopup").style.display = "flex";
+  } else {
+    document.getElementById("rolePopup").style.display = "none";
+  }
+};
+
+/* SELECT ROLE */
+function selectRole(role){
+  USER_TYPE = role;
+  localStorage.setItem("userType", role);
+  document.getElementById("rolePopup").style.display = "none";
 }
 
-function selectUser(type){
-USER_TYPE = type;
-localStorage.setItem("userType", type);
-document.getElementById("userModal").style.display = "none";
-}
+/* ================= SUPABASE ================= */
 
-/* ================= LOAD REWARDS ================= */
+const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OTIzNjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4"; // ONLY ONE
 
-async function loadRewards(){
-
-let { data } = await client.from("rewards").select("*");
-
-let container = document.getElementById("rewardsContainer");
-container.innerHTML = "";
-
-data.forEach(r => {
-
-container.innerHTML += `
-<div class="bg-purple-500/10 backdrop-blur p-6 rounded-xl border border-purple-400">
-
-<h2 class="text-xl mb-2">${r.title}</h2>
-<p class="text-sm mb-2">${r.description || ""}</p>
-<p class="mb-3">Cost: ${r.cost}</p>
-
-<button onclick="buyItem(${r.id}, ${r.cost})"
-class="bg-purple-600 px-4 py-2 rounded">
-Acquire
-</button>
-
-</div>
-`;
-
-});
-
-}
-
-loadRewards();
-
-/* ================= BUY ================= */
-
-async function buyItem(id, cost){
-
-if(!USER_TYPE){
-alert("Select energy first");
-return;
-}
-
-let { data:user } = await client
-.from("users_data")
-.select("*")
-.eq("id", USER_ID)
-.single();
-
-if(user[USER_TYPE] < cost){
-alert("Not enough energy");
-return;
-}
-
-let { data:reward } = await client
-.from("rewards")
-.select("*")
-.eq("id", id)
-.single();
-
-let time = new Date().toLocaleString();
-
-let actorName = USER_TYPE === "garnet" ? "Garnet" : "Sapphire";
-
-let message = `${actorName} manifested ${reward.title} at ${time}`;
-
-await client.from("users_data").update({
-[USER_TYPE]: user[USER_TYPE] - cost
-}).eq("id", USER_ID);
-
-await client.from("purchases").insert({
-user_id: USER_ID,
-reward_id: id,
-created_at: new Date(),
-message: message,
-actor: USER_TYPE
-});
-
-alert(message);
-
-loadLedger();
-
-}
-
-/* ================= LEDGER ================= */
-
-async function loadLedger(){
-
-let { data } = await client
-.from("purchases")
-.select("*")
-.order("created_at", { ascending: false });
-
-let container = document.getElementById("ledgerContainer");
-container.innerHTML = "";
-
-data.forEach(p => {
-
-container.innerHTML += `
-<div class="bg-gray-900 p-4 rounded">
-
-<p>${p.message}</p>
-<p class="text-gray-400 text-sm">${new Date(p.created_at).toLocaleString()}</p>
-
-</div>
-`;
-
-});
-
-}
-
-loadLedger();
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const USER_ID = 1;
 
 </script>
 
