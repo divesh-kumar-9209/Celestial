@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Garnet Core</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<style>
+
+body {
+  touch-action: none;
+}
+
+#spaceCanvas, #beamCanvas{
+position:fixed;
+top:0; left:0;
+width:100%; height:100%;
+pointer-events:none;
+}
+#spaceCanvas{z-index:0;}
+#beamCanvas{z-index:1000;}
+
+body{
+background:linear-gradient(140deg,#2b0000,#100000,#2b0000);
+background-size:300% 300%;
+animation:liquid 25s ease infinite;
+overflow-x:hidden;
+}
+
+@keyframes liquid{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.orbButton{
+background:radial-gradient(circle,#3b82f6,#1e40af);
+box-shadow:0 0 40px rgba(80,120,255,1),0 0 80px rgba(80,120,255,0.8);
+animation:orbPulse 2s infinite;
+transition:0.3s;
+}
+
+@keyframes orbPulse{
+0%{box-shadow:0 0 30px rgba(80,120,255,0.7);}
+50%{box-shadow:0 0 80px rgba(80,120,255,1);}
+100%{box-shadow:0 0 30px rgba(80,120,255,0.7);}
+}
+
+.orbButton:hover{
+transform:scale(1.1);
+}
+
+</style>
+
+</head>
+
+<body class="text-white min-h-screen">
+
+<canvas id="spaceCanvas"></canvas>
+<canvas id="beamCanvas"></canvas>
+
+<!-- HEADER -->
+<div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 p-4 md:p-6">
+
+<h1 class="text-2xl md:text-3xl font-bold text-red-400 drop-shadow-lg">
+Garnet Core
+</h1>
+
+<a href="store.html"
+class="px-4 md:px-5 py-2 rounded-lg bg-green-500 hover:scale-110 transition shadow-lg font-semibold">
+Market
+</a>
+
+</div>
+
+<!-- CARDS -->
+<div class="relative z-10 max-w-6xl w-full mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 p-4 md:p-12">
+
+<div id="sapphireBox"
+class="bg-blue-900/40 backdrop-blur p-6 md:p-10 rounded-xl border border-blue-400 shadow-[0_0_30px_rgba(100,150,255,0.6)] transition hover:scale-105">
+
+<h2 class="text-sm md:text-lg text-blue-300 font-semibold">
+Sapphire Energy
+</h2>
+
+<p id="sapphireValue"
+class="text-4xl md:text-6xl font-extrabold text-blue-300 drop-shadow-[0_0_20px_rgba(120,180,255,1)]">
+0
+</p>
+
+</div>
+
+<div id="garnetBox"
+class="bg-yellow-500/10 backdrop-blur p-6 md:p-10 rounded-xl border border-yellow-400/40 shadow-[0_0_30px_rgba(255,200,0,0.4)] transition hover:scale-105">
+
+<h2 class="text-sm md:text-lg text-yellow-300 font-semibold">
+Garnet Energy
+</h2>
+
+<p id="garnetValue"
+class="text-4xl md:text-6xl font-extrabold text-yellow-300 drop-shadow-[0_0_20px_gold]">
+0
+</p>
+
+</div>
+
+</div>
+
+<!-- BUTTON -->
+<div class="relative z-10 text-center mt-10 md:mt-16">
+
+<button id="orbButton"
+class="orbButton px-10 md:px-16 py-4 md:py-6 rounded-full text-lg md:text-2xl font-extrabold">
+
+Sapphire Orb
+
+</button>
+
+</div>
+
+<script>
+
+/* ================= SUPABASE ================= */
+
+const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OTIzNjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4";
+
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const USER_ID = 1;
+
+async function loadData(){
+let { data } = await client.from("users_data").select("*").eq("id",USER_ID).single();
+document.getElementById("garnetValue").innerText=data.garnet;
+document.getElementById("sapphireValue").innerText=data.sapphire;
+}
+loadData();
+
+/* ================= CONSTELLATION ================= */
+
+const canvas=document.getElementById("spaceCanvas");
+const ctx=canvas.getContext("2d");
+
+function resizeCanvas(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+}
+resizeCanvas();
+
+let mouse = { x: null, y: null };
+
+/* PC mouse */
+window.addEventListener("mousemove", e => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+/* MOBILE TOUCH */
+window.addEventListener("touchmove", e => {
+  const touch = e.touches[0];
+  mouse.x = touch.clientX;
+  mouse.y = touch.clientY;
+});
+
+/* TOUCH START (instant response) */
+window.addEventListener("touchstart", e => {
+  const touch = e.touches[0];
+  mouse.x = touch.clientX;
+  mouse.y = touch.clientY;
+});
+
+/* OPTIONAL: remove effect when finger lifted */
+window.addEventListener("touchend", () => {
+  mouse.x = null;
+  mouse.y = null;
+});
+
+class Star{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.vx=(Math.random()-0.5)*0.2;
+this.vy=(Math.random()-0.5)*0.2;
+this.size=Math.random()*2+1;
+}
+update(){this.x+=this.vx;this.y+=this.vy;}
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+ctx.fillStyle="rgba(255,120,120,0.9)";
+ctx.shadowBlur=6;
+ctx.fill();
+}
+}
+
+let stars=[];
+for(let i=0;i<120;i++) stars.push(new Star());
+
+function connectStars(){
+for(let a=0;a<stars.length;a++){
+for(let b=a;b<stars.length;b++){
+let dx=stars[a].x-stars[b].x;
+let dy=stars[a].y-stars[b].y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<120){
+ctx.strokeStyle="rgba(255,120,120,"+(1-dist/120)+")";
+ctx.beginPath();
+ctx.moveTo(stars[a].x,stars[a].y);
+ctx.lineTo(stars[b].x,stars[b].y);
+ctx.stroke();
+}
+}
+}
+}
+
+function mouseConstellation(){
+stars.forEach(star=>{
+let dx=star.x-mouse.x;
+let dy=star.y-mouse.y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<150){
+ctx.beginPath();
+ctx.moveTo(star.x,star.y);
+ctx.lineTo(mouse.x,mouse.y);
+ctx.strokeStyle="rgba(255,200,120,0.7)";
+ctx.stroke();
+}
+});
+}
+
+function animateSpace(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+stars.forEach(s=>{s.update();s.draw();});
+connectStars();
+mouseConstellation();
+requestAnimationFrame(animateSpace);
+}
+animateSpace();
+
+/* ================= ORB ================= */
+
+const beamCanvas=document.getElementById("beamCanvas");
+const bctx=beamCanvas.getContext("2d");
+
+function resizeBeam(){
+beamCanvas.width=window.innerWidth;
+beamCanvas.height=window.innerHeight;
+}
+resizeBeam();
+
+window.addEventListener("resize",()=>{
+resizeCanvas();
+resizeBeam();
+});
+
+let orbActive=false;
+let t=0;
+
+async function updateCredits(){
+let { data } = await client.from("users_data").select("*").eq("id",USER_ID).single();
+
+if(data.sapphire <= 0){
+alert("Not enough Sapphire");
+return;
+}
+
+await client.from("users_data").update({
+garnet:data.garnet+10,
+sapphire:data.sapphire-10
+}).eq("id",USER_ID);
+
+loadData();
+}
+
+function animateOrb(){
+
+bctx.clearRect(0,0,beamCanvas.width,beamCanvas.height);
+
+if(orbActive){
+
+let s=document.getElementById("sapphireBox").getBoundingClientRect();
+let g=document.getElementById("garnetBox").getBoundingClientRect();
+
+let sx=s.left+s.width/2;
+let sy=s.top+s.height/2;
+
+let ex=g.left+g.width/2;
+let ey=g.top+g.height/2;
+
+t+=0.008;
+
+let cx=(sx+ex)/2;
+let cy=(sy+ey)/2-220;
+
+let x=(1-t)*(1-t)*sx + 2*(1-t)*t*cx + t*t*ex;
+let y=(1-t)*(1-t)*sy + 2*(1-t)*t*cy + t*t*ey;
+
+let r=Math.floor(120+135*t);
+let gcol=Math.floor(180*(1-t));
+let b=Math.floor(255*(1-t));
+
+let outer=bctx.createRadialGradient(x,y,0,x,y,120);
+outer.addColorStop(0,`rgba(${r},${gcol},${b},0.5)`);
+outer.addColorStop(1,"rgba(0,0,0,0)");
+bctx.fillStyle=outer;
+bctx.beginPath();
+bctx.arc(x,y,120,0,Math.PI*2);
+bctx.fill();
+
+let mid=bctx.createRadialGradient(x,y,0,x,y,70);
+mid.addColorStop(0,"white");
+mid.addColorStop(1,`rgba(${r},${gcol},${b},0.9)`);
+bctx.fillStyle=mid;
+bctx.beginPath();
+bctx.arc(x,y,70,0,Math.PI*2);
+bctx.fill();
+
+bctx.beginPath();
+bctx.arc(x,y,18,0,Math.PI*2);
+bctx.fillStyle="white";
+bctx.shadowBlur=50;
+bctx.fill();
+
+for(let i=0;i<12;i++){
+let angle=(Date.now()*0.002+i)*Math.PI/6;
+let fx=x+Math.cos(angle)*65;
+let fy=y+Math.sin(angle)*65;
+bctx.beginPath();
+bctx.arc(fx,fy,Math.random()*6+3,0,Math.PI*2);
+bctx.fillStyle=`rgba(${r},${gcol},${b},0.7)`;
+bctx.fill();
+}
+
+if(t>=1){
+orbActive=false;
+t=0;
+updateCredits();
+}
+
+}
+
+requestAnimationFrame(animateOrb);
+}
+animateOrb();
+
+document.getElementById("orbButton").addEventListener("click",()=>{
+orbActive=true;
+});
+
+</script>
+
+</body>
+</html>
