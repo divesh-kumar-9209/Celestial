@@ -268,8 +268,8 @@ return;
 }
 
 await client.from("users_data").update({
-garnet:data.garnet+10,
-sapphire:data.sapphire-10
+garnet:data.garnet+1,
+sapphire:data.sapphire-1
 }).eq("id",USER_ID);
 
 loadData();
