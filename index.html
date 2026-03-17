@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+<link rel="manifest" href="manifest.json">
 <title>Celestial Portal</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -241,6 +241,12 @@ requestAnimationFrame(animate);
 
 animate();
 
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("/Celestial/sw.js");
+}
 </script>
 
 </body>
