@@ -141,13 +141,25 @@ async function addPoints(type){
 
 let val = parseInt(document.getElementById(`add${capitalize(type)}`).value);
 
-let { data } = await client.from("users_data").select("*").eq("id", USER_ID).single();
+let { data } = await client.from("users_data").select("*").eq("id", 1).single();
 
 await client.from("users_data").update({
 [type]: data[type] + val
-}).eq("id", USER_ID);
+}).eq("id", 1);
+
+/* SAVE HISTORY */
+let message = `God manifested ${val} energy to ${capitalize(type)}`;
+
+await client.from("purchases").insert({
+user_id: 1,
+reward_id: null,
+created_at: new Date(),
+message: message,
+actor: "god"
+});
 
 loadPoints();
+loadPurchases();
 
 }
 
@@ -155,13 +167,27 @@ async function removePoints(type){
 
 let val = parseInt(document.getElementById(`remove${capitalize(type)}`).value);
 
-let { data } = await client.from("users_data").select("*").eq("id", USER_ID).single();
+let { data } = await client.from("users_data").select("*").eq("id", 1).single();
 
+/* UPDATE */
 await client.from("users_data").update({
 [type]: Math.max(0, data[type] - val)
-}).eq("id", USER_ID);
+}).eq("id", 1);
+
+/* 🔥 MESSAGE */
+let message = `God removed ${val} energy from ${capitalize(type)}`;
+
+/* SAVE HISTORY */
+await client.from("purchases").insert({
+user_id: 1,
+reward_id: null,
+created_at: new Date(),
+message: message,
+actor: "god"
+});
 
 loadPoints();
+loadPurchases();
 
 }
 
@@ -278,7 +304,7 @@ async function deletePurchase(id){
 await client.from("purchases").delete().eq("id",id);
 loadPurchases();
 }
-
+const USER_TYPE = localStorage.getItem("userType") || "garnet";
 </script>
 
 </body>
