@@ -41,6 +41,17 @@ touch-action:none;
 100%{transform:translateY(0px);}
 }
 
+@keyframes glow{
+0%{box-shadow:0 0 5px #facc15;}
+50%{box-shadow:0 0 30px #facc15;}
+100%{box-shadow:0 0 5px #facc15;}
+}
+
+@keyframes shine{
+0%{transform:translateX(-100%);}
+100%{transform:translateX(300%);}
+}
+
 .titleGlow{
 text-shadow:
 0 0 12px rgba(125,211,252,0.8),
@@ -56,9 +67,9 @@ text-shadow:
 <canvas id="spaceCanvas"></canvas>
 
 <!-- HEADER -->
-<div class="relative z-10 text-center pt-10 pb-6">
+<div class="relative z-10 text-center pt-10 pb-6 px-4">
 
-<h1 class="text-3xl md:text-5xl font-bold text-cyan-300 titleGlow">
+<h1 class="text-3xl md:text-5xl font-bold text-cyan-300 tracking-widest titleGlow">
 Celestial Vault
 </h1>
 
@@ -70,7 +81,7 @@ Where Energy Becomes Power
 
 <!-- REWARDS -->
 <div id="rewardsContainer"
-class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 px-4 md:px-12 pb-20">
+class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 px-4 md:px-12 pb-20">
 </div>
 
 <!-- LEDGER -->
@@ -106,17 +117,35 @@ container.innerHTML = "";
 data.forEach(r => {
 
 container.innerHTML += `
-<div class="bg-purple-500/10 backdrop-blur p-6 rounded-2xl border border-purple-400/30 shadow-xl hover:scale-105 transition">
+<div class="relative group bg-purple-500/10 backdrop-blur-xl border border-purple-400/30
+p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-purple-400
+shadow-xl hover:shadow-purple-400/40 animate-[float_6s_ease-in-out_infinite]">
 
-<h2 class="text-xl text-purple-300 mb-2">${r.title}</h2>
+<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
+style="animation: glow 2s infinite;"></div>
 
-<p class="text-gray-300 mb-3 text-sm">${r.description || ""}</p>
+<h2 class="text-xl font-semibold mb-2 text-purple-300">
+${r.title}
+</h2>
 
-<p class="text-cyan-300 mb-4">Cost: ${r.cost}</p>
+<p class="text-gray-300 mb-4 text-sm">
+${r.description || ""}
+</p>
+
+<p class="text-cyan-300 font-semibold mb-4">
+Energy Cost: ${r.cost}
+</p>
 
 <button onclick="buyItem(${r.id}, ${r.cost})"
-class="bg-gradient-to-r from-purple-500 to-indigo-600 px-4 py-2 rounded w-full">
+class="relative overflow-hidden bg-gradient-to-r from-purple-500 to-indigo-600
+px-4 py-2 rounded-lg w-full font-semibold tracking-wide
+hover:scale-105 transition shadow-lg">
+
 Acquire Artifact
+
+<span class="absolute top-0 left-0 w-20 h-full bg-white/30 skew-x-12"
+style="animation: shine 2s infinite;"></span>
+
 </button>
 
 </div>
@@ -128,7 +157,7 @@ Acquire Artifact
 
 loadRewards();
 
-/* ================= BUY FUNCTION ================= */
+/* ================= BUY ================= */
 
 async function buyItem(id, cost){
 
@@ -143,12 +172,10 @@ alert("Not enough Garnet");
 return;
 }
 
-/* deduct credits */
 await client.from("users_data").update({
 garnet: user.garnet - cost
 }).eq("id", USER_ID);
 
-/* insert purchase */
 await client.from("purchases").insert({
 user_id: USER_ID,
 reward_id: id,
@@ -156,11 +183,11 @@ created_at: new Date()
 });
 
 loadLedger();
-alert("Purchased!");
+alert("Artifact Acquired!");
 
 }
 
-/* ================= LOAD LEDGER ================= */
+/* ================= LEDGER ================= */
 
 async function loadLedger(){
 
@@ -175,10 +202,17 @@ container.innerHTML = "";
 data.forEach(p => {
 
 container.innerHTML += `
-<div class="bg-gray-900/60 p-4 rounded-xl border border-purple-700 flex justify-between">
+<div class="bg-gray-900/60 backdrop-blur border border-purple-700
+p-4 md:p-5 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center
+transition hover:border-purple-400 hover:scale-[1.02]">
 
-<span>Purchased Item #${p.reward_id}</span>
-<span class="text-sm text-gray-400">${new Date(p.created_at).toLocaleString()}</span>
+<span class="text-gray-200 text-sm md:text-lg">
+Artifact #${p.reward_id} acquired
+</span>
+
+<span class="text-gray-400 text-xs md:text-sm">
+${new Date(p.created_at).toLocaleString()}
+</span>
 
 </div>
 `;
@@ -199,7 +233,6 @@ canvas.width=window.innerWidth;
 canvas.height=window.innerHeight;
 }
 resize();
-
 window.addEventListener("resize",resize);
 
 let mouse={x:null,y:null};
@@ -238,7 +271,37 @@ ctx.fill();
 let stars=[];
 for(let i=0;i<140;i++) stars.push(new Star());
 
-/* animate */
+function connectStars(){
+for(let a=0;a<stars.length;a++){
+for(let b=a;b<stars.length;b++){
+let dx=stars[a].x-stars[b].x;
+let dy=stars[a].y-stars[b].y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<120){
+ctx.strokeStyle="rgba(192,132,252,"+(1-dist/120)+")";
+ctx.beginPath();
+ctx.moveTo(stars[a].x,stars[a].y);
+ctx.lineTo(stars[b].x,stars[b].y);
+ctx.stroke();
+}
+}
+}
+}
+
+function mouseConstellation(){
+stars.forEach(star=>{
+let dx=star.x-mouse.x;
+let dy=star.y-mouse.y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+if(dist<150){
+ctx.beginPath();
+ctx.moveTo(star.x,star.y);
+ctx.lineTo(mouse.x,mouse.y);
+ctx.strokeStyle="rgba(236,72,153,0.7)";
+ctx.stroke();
+}
+});
+}
 
 function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -247,6 +310,9 @@ stars.forEach(s=>{
 s.update();
 s.draw();
 });
+
+connectStars();
+mouseConstellation();
 
 requestAnimationFrame(animate);
 }
