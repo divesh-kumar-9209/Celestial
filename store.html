@@ -64,6 +64,34 @@ text-shadow:
 
 <body class="text-white min-h-screen">
 
+
+<div id="rolePopup" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
+
+<div class="bg-purple-900/40 backdrop-blur-xl border border-purple-400/40 p-8 rounded-2xl text-center shadow-xl">
+
+<h2 class="text-2xl font-bold text-cyan-300 mb-6">
+Choose Your Form
+</h2>
+
+<div class="flex gap-6 justify-center">
+
+<button onclick="selectRole('garnet')"
+class="bg-red-600 px-6 py-3 rounded-lg hover:scale-110 transition">
+Garnet
+</button>
+
+<button onclick="selectRole('sapphire')"
+class="bg-blue-600 px-6 py-3 rounded-lg hover:scale-110 transition">
+Sapphire
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
 <canvas id="spaceCanvas"></canvas>
 
 <!-- HEADER -->
@@ -97,10 +125,21 @@ Energy Ledger
 
 <script>
 
+let USER_TYPE = localStorage.getItem("userType");
+
+/* SHOW POPUP IF NOT SELECTED */
+window.onload = () => {
+  if(!USER_TYPE){
+    document.getElementById("rolePopup").style.display = "flex";
+  } else {
+    document.getElementById("rolePopup").style.display = "none";
+  }
+};
+
 /* ================= SUPABASE ================= */
 
 const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
-const SUPABASE_KEY = "YOUR_KEY";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OTIzNjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4";
 
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const USER_ID = 1;
@@ -250,6 +289,12 @@ ${new Date(p.created_at).toLocaleString()}
 
 loadLedger();
 
+function selectRole(role){
+  USER_TYPE = role;
+  localStorage.setItem("userType", role);
+  document.getElementById("rolePopup").style.display = "none";
+}
+actor: USER_TYPE
 </script>
 
 </body>
