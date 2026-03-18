@@ -68,7 +68,7 @@ text-shadow:
 
 <body class="text-white">
 
-<!-- 🔥 ROLE POPUP -->
+<!-- ROLE POPUP -->
 <div id="rolePopup" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
 
 <div class="bg-purple-900/40 backdrop-blur-xl border border-purple-400/40 p-8 rounded-2xl text-center shadow-xl">
@@ -97,21 +97,24 @@ Sapphire
 
 <canvas id="spaceCanvas"></canvas>
 
-<!-- 🔥 USER STATUS -->
+<!-- USER STATUS -->
 <div id="userStatus"
-class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/40 backdrop-blur-lg px-6 py-2 rounded-xl border border-purple-400/30 text-center">
+class="fixed top-3 md:top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl border backdrop-blur-lg text-center shadow-xl min-w-[180px]">
 Loading...
 </div>
 
-<!-- 🔥 BACK BUTTON -->
+<!-- BACK BUTTON -->
 <button onclick="goBack()"
-class="fixed bottom-4 left-4 z-50 bg-indigo-600 px-4 py-2 rounded-lg shadow-lg hover:scale-110 transition">
+class="fixed bottom-4 left-6 md:left-10 z-50 px-6 py-3 rounded-full font-bold
+bg-red-500/10 backdrop-blur-xl border border-red-400/30
+transition duration-500 hover:scale-110 hover:border-red-400
+shadow-xl hover:shadow-red-400/40">
 Back
 </button>
 
-<!-- 🔥 SWITCH ROLE -->
+<!-- SWITCH ROLE -->
 <button onclick="changeRole()"
-class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-purple-600 px-6 py-3 rounded-xl shadow-lg hover:scale-110 transition">
+class="fixed bottom-4 right-6 md:right-10 z-50 bg-purple-600 px-6 py-3 rounded-xl shadow-lg hover:scale-110 transition">
 Switch Role
 </button>
 
@@ -126,10 +129,8 @@ class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none
 
 </div>
 
-<!-- MAIN WRAPPER (CENTERED) -->
-<div class="relative z-10 w-full max-w-6xl text-center">
+<div class="relative z-10 w-full max-w-6xl text-center mt-16 md:mt-20">
 
-<!-- HEADER -->
 <div class="pt-10 pb-6 px-4">
 
 <h1 class="text-3xl md:text-5xl font-bold text-cyan-300 tracking-widest titleGlow">
@@ -142,12 +143,10 @@ Where Energy Becomes Power
 
 </div>
 
-<!-- REWARDS -->
 <div id="rewardsContainer"
 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 px-4 md:px-12 pb-20">
 </div>
 
-<!-- LEDGER -->
 <div class="px-4 md:px-12 pb-24">
 
 <h2 class="text-xl md:text-3xl font-bold mb-6 text-cyan-300">
@@ -162,37 +161,46 @@ Energy Ledger
 
 <script>
 
-/* ================= ROLE ================= */
+/* ROLE */
 
 let USER_TYPE = localStorage.getItem("userType");
 
+/* SOUND + VIBRATION */
+const buySound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-game-level-completed-2059.mp3");
+
+function vibrate(){
+if(navigator.vibrate){
+navigator.vibrate([120,60,120]);
+}
+}
+
 /* POPUP CONTROL */
 window.addEventListener("load", () => {
-  if(!USER_TYPE){
-    document.getElementById("rolePopup").style.display = "flex";
-  } else {
-    document.getElementById("rolePopup").style.display = "none";
-    updateUserStatus();
-  }
+if(!USER_TYPE){
+document.getElementById("rolePopup").style.display = "flex";
+} else {
+document.getElementById("rolePopup").style.display = "none";
+updateUserStatus();
+}
 });
 
 /* SELECT ROLE */
 function selectRole(role){
-  USER_TYPE = role;
-  localStorage.setItem("userType", role);
-  document.getElementById("rolePopup").style.display = "none";
-  updateUserStatus();
+USER_TYPE = role;
+localStorage.setItem("userType", role);
+document.getElementById("rolePopup").style.display = "none";
+updateUserStatus();
 }
 
-/* ================= SUPABASE ================= */
+/* SUPABASE */
 
 const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OTIzNjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4";
+const SUPABASE_KEY = "YOUR_KEY";
 
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const USER_ID = 1;
 
-/* 🔥 LIVE USER STATUS */
+/* USER STATUS */
 async function updateUserStatus(){
 
 if(!USER_TYPE) return;
@@ -207,16 +215,27 @@ let points = user[USER_TYPE];
 
 let name = USER_TYPE === "garnet" ? "Garnet" : "Sapphire";
 
-document.getElementById("userStatus").innerHTML =
-`<span class="text-cyan-300 font-semibold">${name}</span> | ${points} Energy`;
+let badge = document.getElementById("userStatus");
+
+if(USER_TYPE === "garnet"){
+badge.style.borderColor = "#f87171";
+badge.style.background = "rgba(127,29,29,0.4)";
+badge.style.boxShadow = "0 0 20px rgba(248,113,113,0.6)";
+} else {
+badge.style.borderColor = "#60a5fa";
+badge.style.background = "rgba(30,58,138,0.4)";
+badge.style.boxShadow = "0 0 20px rgba(96,165,250,0.6)";
+}
+
+badge.innerHTML =
+`<span class="font-semibold">${name}</span> | ${points} Energy`;
 
 }
 
 /* auto refresh */
 setInterval(updateUserStatus, 2000);
 
-/* ================= LOAD REWARDS ================= */
-
+/* LOAD REWARDS */
 async function loadRewards(){
 
 let { data } = await client.from("rewards").select("*");
@@ -267,8 +286,7 @@ style="animation: shine 2s infinite;"></span>
 
 loadRewards();
 
-/* ================= BUY ================= */
-
+/* BUY */
 async function buyItem(id, cost){
 
 if(!USER_TYPE){
@@ -313,14 +331,17 @@ message: message,
 actor: USER_TYPE
 });
 
+/* NEW UX */
+buySound.play();
+vibrate();
+
 showToast(message);
 loadLedger();
 updateUserStatus();
 
 }
 
-/* ================= LEDGER ================= */
-
+/* LEDGER */
 async function loadLedger(){
 
 let { data } = await client
@@ -355,13 +376,12 @@ ${new Date(p.created_at).toLocaleString()}
 
 loadLedger();
 
-/* ================= BACK ================= */
-
+/* BACK */
 function goBack(){
 history.back();
 }
 
-/* ================= CANVAS ================= */
+/* CANVAS (UNCHANGED) */
 
 const canvas=document.getElementById("spaceCanvas");
 const ctx=canvas.getContext("2d");
