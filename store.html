@@ -27,6 +27,10 @@ background-size:400% 400%;
 animation:cosmic 30s ease infinite;
 overflow-x:hidden;
 touch-action: pan-y;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
 }
 
 @keyframes cosmic{
@@ -62,40 +66,9 @@ text-shadow:
 
 </head>
 
-<body class="text-white min-h-screen">
+<body class="text-white">
 
-<!-- 🔝 TOP RIGHT -->
-<div class="fixed top-4 right-4 z-50 flex gap-3">
-
-<a href="index.html"
-class="px-4 py-2 rounded-lg bg-purple-500/20 backdrop-blur border border-purple-400/30
-hover:scale-110 transition shadow-lg">
-Back
-</a>
-
-<button onclick="changeRole()"
-class="bg-purple-600 px-4 py-2 rounded-lg shadow-lg hover:scale-110 transition">
-Switch Role
-</button>
-
-</div>
-
-<!-- 🔝 ROLE + POINTS -->
-<div class="fixed top-4 left-4 z-50 space-y-2">
-
-<div id="roleIndicator"
-class="px-4 py-2 rounded-lg backdrop-blur border text-sm font-semibold shadow-lg">
-Loading...
-</div>
-
-<div id="pointsIndicator"
-class="px-4 py-2 rounded-lg backdrop-blur border text-sm shadow-lg">
-Points: 0
-</div>
-
-</div>
-
-<!-- ROLE POPUP -->
+<!-- 🔥 ROLE POPUP -->
 <div id="rolePopup" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
 
 <div class="bg-purple-900/40 backdrop-blur-xl border border-purple-400/40 p-8 rounded-2xl text-center shadow-xl">
@@ -124,7 +97,24 @@ Sapphire
 
 <canvas id="spaceCanvas"></canvas>
 
-<!-- TOAST -->
+<!-- 🔥 USER STATUS -->
+<div id="userStatus"
+class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-black/40 backdrop-blur-lg px-6 py-2 rounded-xl border border-purple-400/30 text-center">
+Loading...
+</div>
+
+<!-- 🔥 BACK BUTTON -->
+<button onclick="goBack()"
+class="fixed bottom-4 left-4 z-50 bg-indigo-600 px-4 py-2 rounded-lg shadow-lg hover:scale-110 transition">
+Back
+</button>
+
+<!-- 🔥 SWITCH ROLE -->
+<button onclick="changeRole()"
+class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-purple-600 px-6 py-3 rounded-xl shadow-lg hover:scale-110 transition">
+Switch Role
+</button>
+
 <div id="toast"
 class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none transition duration-500">
 
@@ -136,8 +126,11 @@ class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none
 
 </div>
 
+<!-- MAIN WRAPPER (CENTERED) -->
+<div class="relative z-10 w-full max-w-6xl text-center">
+
 <!-- HEADER -->
-<div class="relative z-10 text-center pt-16 pb-6 px-4">
+<div class="pt-10 pb-6 px-4">
 
 <h1 class="text-3xl md:text-5xl font-bold text-cyan-300 tracking-widest titleGlow">
 Celestial Vault
@@ -151,11 +144,11 @@ Where Energy Becomes Power
 
 <!-- REWARDS -->
 <div id="rewardsContainer"
-class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 px-4 md:px-12 pb-20">
+class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12 px-4 md:px-12 pb-20">
 </div>
 
 <!-- LEDGER -->
-<div class="relative z-10 px-4 md:px-12 pb-20">
+<div class="px-4 md:px-12 pb-24">
 
 <h2 class="text-xl md:text-3xl font-bold mb-6 text-cyan-300">
 Energy Ledger
@@ -165,63 +158,62 @@ Energy Ledger
 
 </div>
 
+</div>
+
 <script>
 
 /* ================= ROLE ================= */
 
 let USER_TYPE = localStorage.getItem("userType");
 
-async function updateRoleUI(){
-
-const roleEl = document.getElementById("roleIndicator");
-const pointsEl = document.getElementById("pointsIndicator");
-
-if(!USER_TYPE){
-roleEl.innerText = "No Role Selected";
-pointsEl.innerText = "Points: 0";
-return;
-}
-
-let { data:user } = await client.from("users_data").select("*").eq("id",USER_ID).single();
-
-let points = user[USER_TYPE];
-
-if(USER_TYPE === "garnet"){
-roleEl.innerText = "Active: Garnet Core";
-roleEl.className = "px-4 py-2 rounded-lg backdrop-blur border text-sm font-semibold shadow-lg border-red-400 text-red-300 bg-red-500/10";
-}
-else{
-roleEl.innerText = "Active: Sapphire Chamber";
-roleEl.className = "px-4 py-2 rounded-lg backdrop-blur border text-sm font-semibold shadow-lg border-blue-400 text-blue-300 bg-blue-500/10";
-}
-
-pointsEl.innerText = "Points: " + points;
-
-}
-
+/* POPUP CONTROL */
 window.addEventListener("load", () => {
   if(!USER_TYPE){
     document.getElementById("rolePopup").style.display = "flex";
   } else {
     document.getElementById("rolePopup").style.display = "none";
+    updateUserStatus();
   }
-  updateRoleUI();
 });
 
+/* SELECT ROLE */
 function selectRole(role){
   USER_TYPE = role;
   localStorage.setItem("userType", role);
   document.getElementById("rolePopup").style.display = "none";
-  updateRoleUI();
+  updateUserStatus();
 }
 
 /* ================= SUPABASE ================= */
 
 const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OT23NjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4";
+const SUPABASE_KEY = "YOUR_KEY";
 
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const USER_ID = 1;
+
+/* 🔥 LIVE USER STATUS */
+async function updateUserStatus(){
+
+if(!USER_TYPE) return;
+
+let { data:user } = await client
+.from("users_data")
+.select("*")
+.eq("id", USER_ID)
+.single();
+
+let points = user[USER_TYPE];
+
+let name = USER_TYPE === "garnet" ? "Garnet" : "Sapphire";
+
+document.getElementById("userStatus").innerHTML =
+`<span class="text-cyan-300 font-semibold">${name}</span> | ${points} Energy`;
+
+}
+
+/* auto refresh */
+setInterval(updateUserStatus, 2000);
 
 /* ================= LOAD REWARDS ================= */
 
@@ -321,12 +313,9 @@ message: message,
 actor: USER_TYPE
 });
 
-/* POPUP */
 showToast(message);
-
-/* REFRESH */
 loadLedger();
-updateRoleUI();
+updateUserStatus();
 
 }
 
@@ -366,6 +355,12 @@ ${new Date(p.created_at).toLocaleString()}
 
 loadLedger();
 
+/* ================= BACK ================= */
+
+function goBack(){
+history.back();
+}
+
 /* ================= CANVAS ================= */
 
 const canvas=document.getElementById("spaceCanvas");
@@ -386,12 +381,12 @@ mouse.y=e.clientY;
 });
 
 window.addEventListener("touchmove", e=>{
-  if(e.touches.length > 0){
-    let t = e.touches[0];
-    mouse.x = t.clientX;
-    mouse.y = t.clientY;
-  }
-}, { passive: true });
+if(e.touches.length > 0){
+let t = e.touches[0];
+mouse.x = t.clientX;
+mouse.y = t.clientY;
+}
+},{ passive:true });
 
 class Star{
 constructor(){
@@ -448,21 +443,16 @@ ctx.stroke();
 
 function animate(){
 ctx.clearRect(0,0,canvas.width,canvas.height);
-
 stars.forEach(s=>{
 s.update();
 s.draw();
 });
-
 connectStars();
 mouseConstellation();
-
 requestAnimationFrame(animate);
 }
 
 animate();
-
-/* ================= UTIL ================= */
 
 function changeRole(){
 localStorage.removeItem("userType");
