@@ -28,16 +28,19 @@ animation:cosmic 30s ease infinite;
 overflow-x:hidden;
 touch-action: pan-y;
 display:flex;
-justify-content:flex-start;
-align-items:flex-start;
+display:flex;
+justify-content:center;
+align-items:center;
 padding-top:80px;
-min-height:100vh;
 min-height:100dvh;
 color:white;
 }
 
 #spaceCanvas{
-z-index:-1;
+z-index:0;
+}
+html, body {
+height:100%;
 }
 
 @keyframes cosmic{
@@ -136,7 +139,7 @@ class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none
 
 </div>
 
-<div class="relative z-10 w-full max-w-6xl text-center px-4 py-6">
+<div class="relative z-10 w-full max-w-6xl text-center">
 
 <div class="pt-10 pb-6 px-4">
 
