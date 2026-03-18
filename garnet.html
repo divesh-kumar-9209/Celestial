@@ -58,13 +58,16 @@ transform:scale(1.1);
 
 </head>
 
-<body class="text-white min-h-screen">
+<body class="text-white min-h-screen flex items-center justify-center">
 
 <canvas id="spaceCanvas"></canvas>
 <canvas id="beamCanvas"></canvas>
 
+<!-- MAIN WRAPPER -->
+<div class="relative z-10 w-full max-w-6xl flex flex-col items-center justify-center text-center px-4">
+
 <!-- HEADER -->
-<div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4 p-4 md:p-6">
+<div class="flex flex-col md:flex-row items-center justify-between w-full mb-8 gap-4">
 
 <h1 class="text-2xl md:text-3xl font-bold text-red-400 drop-shadow-lg">
 Garnet Core
@@ -78,7 +81,7 @@ Market
 </div>
 
 <!-- CARDS -->
-<div class="relative z-10 max-w-6xl w-full mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 p-4 md:p-12">
+<div class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
 
 <div id="sapphireBox"
 class="bg-blue-900/40 backdrop-blur p-6 md:p-10 rounded-xl border border-blue-400 shadow-[0_0_30px_rgba(100,150,255,0.6)] transition hover:scale-105">
@@ -110,8 +113,8 @@ class="text-4xl md:text-6xl font-extrabold text-yellow-300 drop-shadow-[0_0_20px
 
 </div>
 
-<!-- BUTTON -->
-<div class="relative z-10 text-center mt-10 md:mt-16">
+<!-- ORB BUTTON -->
+<div class="mt-10 md:mt-14">
 
 <button id="orbButton"
 class="orbButton px-10 md:px-16 py-4 md:py-6 rounded-full text-lg md:text-2xl font-extrabold">
@@ -119,6 +122,23 @@ class="orbButton px-10 md:px-16 py-4 md:py-6 rounded-full text-lg md:text-2xl fo
 Sapphire Orb
 
 </button>
+
+</div>
+
+<!-- BACK BUTTON -->
+<div class="mt-8">
+
+<a href="index.html"
+class="inline-block px-8 py-3 rounded-full text-lg font-bold
+bg-red-500/10 backdrop-blur-xl border border-red-400/30
+transition duration-500 hover:scale-110 hover:border-red-400
+shadow-xl hover:shadow-red-400/40">
+
+Back
+
+</a>
+
+</div>
 
 </div>
 
@@ -152,27 +172,23 @@ resizeCanvas();
 
 let mouse = { x: null, y: null };
 
-/* PC mouse */
 window.addEventListener("mousemove", e => {
   mouse.x = e.clientX;
   mouse.y = e.clientY;
 });
 
-/* MOBILE TOUCH */
 window.addEventListener("touchmove", e => {
   const touch = e.touches[0];
   mouse.x = touch.clientX;
   mouse.y = touch.clientY;
 });
 
-/* TOUCH START (instant response) */
 window.addEventListener("touchstart", e => {
   const touch = e.touches[0];
   mouse.x = touch.clientX;
   mouse.y = touch.clientY;
 });
 
-/* OPTIONAL: remove effect when finger lifted */
 window.addEventListener("touchend", () => {
   mouse.x = null;
   mouse.y = null;
