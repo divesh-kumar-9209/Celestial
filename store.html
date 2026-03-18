@@ -33,7 +33,7 @@ justify-content:center;
 align-items:center;
 padding-top:80px;
 min-height:100vh;
-min-height:100dvh;
+min-height:100svh;
 color:white;
 }
 
@@ -42,6 +42,10 @@ z-index:0;
 }
 html, body {
 height:100%;
+}
+
+*{
+box-sizing:border-box;
 }
 
 @keyframes cosmic{
@@ -140,7 +144,7 @@ class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none
 
 </div>
 
-<div class="relative z-10 w-full max-w-6xl text-center">
+<div class="relative z-10 w-full max-w-6xl text-center px-4">
 
 <div class="pt-10 pb-6 px-4">
 
@@ -508,6 +512,11 @@ toast.style.transform = "translate(-50%, -20px) scale(0.9)";
 }
 
 </script>
-
+<script>
+document.body.style.opacity = "0";
+window.addEventListener("load", () => {
+  document.body.style.opacity = "1";
+});
+</script>
 </body>
 </html>
