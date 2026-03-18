@@ -1,21 +1,29 @@
-const CACHE_NAME = "celestial-v1";
+const CACHE_NAME = "celestial-v2";
+
 const urlsToCache = [
   "/Celestial/",
-  "/Celestial/index.html",
-  "/Celestial/style.css",
-  "/Celestial/script.js"
+  "/Celestial/index.html"
 ];
 
 self.addEventListener("install", event => {
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+    caches.keys().then(keys => {
+      return Promise.all(
+        keys.map(key => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    })
   );
+  self.clients.claim();
 });
 
 self.addEventListener("fetch", event => {
-  event.respondWith(
-    caches.match(event.request).then(response => {
-      return response || fetch(event.request);
-    })
-  );
-}); 
+  event.respondWith(fetch(event.request));
+});
