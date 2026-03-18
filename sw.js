@@ -1,4 +1,4 @@
-const CACHE_NAME = "celestial-v2";
+const CACHE_NAME = "celestial-v3";
 
 const urlsToCache = [
   "/Celestial/",
