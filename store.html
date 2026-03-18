@@ -4,7 +4,7 @@
 
 <title>Celestial Vault</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -28,9 +28,16 @@ animation:cosmic 30s ease infinite;
 overflow-x:hidden;
 touch-action: pan-y;
 display:flex;
-justify-content:center;
-align-items:center;
+justify-content:flex-start;
+align-items:flex-start;
+padding-top:80px;
 min-height:100vh;
+min-height:100dvh;
+color:white;
+}
+
+#spaceCanvas{
+z-index:-1;
 }
 
 @keyframes cosmic{
@@ -129,7 +136,7 @@ class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none
 
 </div>
 
-<div class="relative z-10 w-full max-w-6xl text-center mt-16 md:mt-20">
+<div class="relative z-10 w-full max-w-6xl text-center px-4 py-6">
 
 <div class="pt-10 pb-6 px-4">
 
