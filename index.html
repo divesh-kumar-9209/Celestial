@@ -54,7 +54,7 @@ text-shadow:
 0 0 50px rgba(192,132,252,0.8);
 }
 
-/* Cards */
+/* cards */
 .cardFloat{
 animation: float 6s ease-in-out infinite;
 }
@@ -108,114 +108,116 @@ Choose Your Realm of Power
 <!-- CARDS -->
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 w-full">
 
-<!-- Garnet -->
-<a href="garnet.html" onmouseover="playHover()" onclick="handleClick(event, 'garnet.html')"
+<a href="garnet.html" onclick="handleClick(event,'garnet.html')"
 class="relative cardBase cardGlow cardFloat cardHover bg-red-900 bg-opacity-30 border border-red-400 p-6 rounded-2xl shadow-xl hover:shadow-red-400/40">
-
 <h2 class="text-xl font-semibold text-red-300 mb-3">Garnet Core</h2>
 <p class="text-gray-300 text-sm">Harness raw energy power</p>
-
 </a>
 
-<!-- Sapphire -->
-<a href="sapphire.html" onmouseover="playHover()" onclick="handleClick(event, 'sapphire.html')"
+<a href="sapphire.html" onclick="handleClick(event,'sapphire.html')"
 class="relative cardBase cardGlow cardFloat cardHover bg-blue-900 bg-opacity-30 border border-blue-400 p-6 rounded-2xl shadow-xl hover:shadow-blue-400/40">
-
 <h2 class="text-xl font-semibold text-blue-300 mb-3">Sapphire Chamber</h2>
 <p class="text-gray-300 text-sm">Channel refined energy</p>
-
 </a>
 
-<!-- Store -->
-<a href="store.html" onmouseover="playHover()" onclick="handleClick(event, 'store.html')"
+<a href="store.html" onclick="handleClick(event,'store.html')"
 class="relative cardBase cardGlow cardFloat cardHover bg-purple-900 bg-opacity-30 border border-purple-400 p-6 rounded-2xl shadow-xl hover:shadow-purple-400/40">
-
 <h2 class="text-xl font-semibold text-purple-300 mb-3">Celestial Vault</h2>
 <p class="text-gray-300 text-sm">Acquire powerful artifacts</p>
-
 </a>
 
-<!-- Admin -->
-<a href="admin.html" onmouseover="playHover()" onclick="handleClick(event, 'admin.html')"
+<a href="admin.html" onclick="handleClick(event,'admin.html')"
 class="relative cardBase cardGlow cardFloat cardHover bg-green-900 bg-opacity-30 border border-green-400 p-6 rounded-2xl shadow-xl hover:shadow-green-400/40">
-
 <h2 class="text-xl font-semibold text-green-300 mb-3">Admin Panel</h2>
 <p class="text-gray-300 text-sm">Control the system</p>
-
 </a>
 
 </div>
-
 </div>
 
 <script>
 
-/* SOUND + VIBRATION */
-let clickSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3");
-let hoverSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-interface-hover-2566.mp3");
+/* ================= SOUND ================= */
 
-/* 🔊 CLICK (FIXED) */
-function handleClick(e, url){
+let clickSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3");
+clickSound.preload = "auto";
+
+let unlocked = false;
+
+function unlockAudio(){
+if(unlocked) return;
+
+clickSound.muted = true;
+
+clickSound.play().then(()=>{
+clickSound.pause();
+clickSound.currentTime = 0;
+clickSound.muted = false;
+unlocked = true;
+}).catch(()=>{});
+}
+
+document.addEventListener("click", unlockAudio, { once: true });
+document.addEventListener("touchstart", unlockAudio, { once: true });
+
+function handleClick(e,url){
 e.preventDefault();
 
-try{
+unlockAudio();
+
 clickSound.currentTime = 0;
-clickSound.play();
-}catch(err){}
+clickSound.play().catch(()=>{});
 
 /* vibration */
 if(navigator.vibrate){
-navigator.vibrate(100);
+navigator.vibrate([80,40,80]);
 }
 
 /* delay navigation */
 setTimeout(()=>{
 window.location.href = url;
-}, 250);
+},300);
 }
 
-/* 🔊 HOVER (DESKTOP ONLY SAFE) */
-function playHover(){
-try{
-hoverSound.currentTime = 0;
-hoverSound.play();
-}catch(err){}
-}
+/* ================= CANVAS ================= */
 
-/* CANVAS */
-
-const canvas=document.getElementById("spaceCanvas");
-const ctx=canvas.getContext("2d");
+const canvas = document.getElementById("spaceCanvas");
+const ctx = canvas.getContext("2d");
 
 function resize(){
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 }
 resize();
-window.addEventListener("resize",resize);
+window.addEventListener("resize", resize);
 
-let mouse={x:null,y:null};
+let mouse = {x:null, y:null};
 
-window.addEventListener("mousemove",e=>{
-mouse.x=e.clientX;
-mouse.y=e.clientY;
+window.addEventListener("mousemove", e=>{
+mouse.x = e.clientX;
+mouse.y = e.clientY;
 });
 
-window.addEventListener("touchmove",e=>{
-let t=e.touches[0];
-mouse.x=t.clientX;
-mouse.y=t.clientY;
+window.addEventListener("touchmove", e=>{
+let t = e.touches[0];
+mouse.x = t.clientX;
+mouse.y = t.clientY;
 });
+
+/* stars */
 
 class Star{
 constructor(){
-this.x=Math.random()*canvas.width;
-this.y=Math.random()*canvas.height;
-this.vx=(Math.random()-0.5)*0.2;
-this.vy=(Math.random()-0.5)*0.2;
-this.size=Math.random()*2+1;
+this.x = Math.random()*canvas.width;
+this.y = Math.random()*canvas.height;
+this.vx = (Math.random()-0.5)*0.2;
+this.vy = (Math.random()-0.5)*0.2;
+this.size = Math.random()*2+1;
 }
-update(){this.x+=this.vx;this.y+=this.vy;}
+update(){
+this.x += this.vx;
+this.y += this.vy;
+}
 draw(){
 ctx.beginPath();
 ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
@@ -225,20 +227,23 @@ ctx.fill();
 }
 }
 
-let stars=[];
-for(let i=0;i<140;i++) stars.push(new Star());
+let stars = [];
+for(let i=0;i<140;i++){
+stars.push(new Star());
+}
 
 function connectStars(){
 for(let a=0;a<stars.length;a++){
 for(let b=a;b<stars.length;b++){
-let dx=stars[a].x-stars[b].x;
-let dy=stars[a].y-stars[b].y;
-let dist=Math.sqrt(dx*dx+dy*dy);
-if(dist<120){
-ctx.strokeStyle="rgba(192,132,252,"+(1-dist/120)+")";
+let dx = stars[a].x - stars[b].x;
+let dy = stars[a].y - stars[b].y;
+let dist = Math.sqrt(dx*dx + dy*dy);
+
+if(dist < 120){
+ctx.strokeStyle = "rgba(192,132,252,"+(1-dist/120)+")";
 ctx.beginPath();
-ctx.moveTo(stars[a].x,stars[a].y);
-ctx.lineTo(stars[b].x,stars[b].y);
+ctx.moveTo(stars[a].x, stars[a].y);
+ctx.lineTo(stars[b].x, stars[b].y);
 ctx.stroke();
 }
 }
@@ -246,15 +251,18 @@ ctx.stroke();
 }
 
 function mouseConstellation(){
+if(mouse.x === null) return;
+
 stars.forEach(star=>{
-let dx=star.x-mouse.x;
-let dy=star.y-mouse.y;
-let dist=Math.sqrt(dx*dx+dy*dy);
-if(dist<150){
+let dx = star.x - mouse.x;
+let dy = star.y - mouse.y;
+let dist = Math.sqrt(dx*dx + dy*dy);
+
+if(dist < 150){
 ctx.beginPath();
-ctx.moveTo(star.x,star.y);
-ctx.lineTo(mouse.x,mouse.y);
-ctx.strokeStyle="rgba(236,72,153,0.7)";
+ctx.moveTo(star.x, star.y);
+ctx.lineTo(mouse.x, mouse.y);
+ctx.strokeStyle = "rgba(236,72,153,0.7)";
 ctx.stroke();
 }
 });
