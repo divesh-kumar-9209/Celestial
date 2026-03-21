@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-
 <title>Admin Panel</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +9,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 <style>
-
 body{
 background:linear-gradient(140deg,#020617,#0f172a,#020617);
 background-size:400% 400%;
@@ -42,25 +40,19 @@ transition:0.3s;
 .btn:hover{
 transform:scale(1.05);
 }
-
 </style>
-
 </head>
 
 <body class="text-white min-h-screen p-4 md:p-10">
 
-<h1 class="text-2xl md:text-3xl font-bold mb-8 text-center">
-Admin Panel
-</h1>
+<h1 class="text-3xl font-bold mb-8 text-center">Admin Panel</h1>
 
 <!-- USERS -->
 <div class="card">
-
 <h2 class="text-xl mb-4 text-cyan-300">Users</h2>
 
-<table class="w-full text-sm md:text-base">
-
-<tr class="border-b border-gray-700">
+<table class="w-full">
+<tr>
 <th>Name</th>
 <th>Points</th>
 <th>Add</th>
@@ -68,105 +60,71 @@ Admin Panel
 <th>Reset</th>
 </tr>
 
-<tr class="border-b border-gray-800">
-
+<tr>
 <td>Sapphire</td>
 <td id="sapphirePoints">0</td>
-
 <td>
-<input id="addSapphire" class="text-black w-16 px-1">
+<input id="addSapphire" class="text-black w-16">
 <button onclick="addPoints('sapphire')" class="btn bg-green-600">Add</button>
 </td>
-
 <td>
-<input id="removeSapphire" class="text-black w-16 px-1">
+<input id="removeSapphire" class="text-black w-16">
 <button onclick="removePoints('sapphire')" class="btn bg-red-600">Remove</button>
 </td>
-
 <td>
 <button onclick="resetPoints('sapphire')" class="btn bg-yellow-600">Reset</button>
 </td>
-
 </tr>
 
-<tr class="border-b border-gray-800">
-
+<tr>
 <td>Garnet</td>
 <td id="garnetPoints">0</td>
-
 <td>
-<input id="addGarnet" class="text-black w-16 px-1">
+<input id="addGarnet" class="text-black w-16">
 <button onclick="addPoints('garnet')" class="btn bg-green-600">Add</button>
 </td>
-
 <td>
-<input id="removeGarnet" class="text-black w-16 px-1">
+<input id="removeGarnet" class="text-black w-16">
 <button onclick="removePoints('garnet')" class="btn bg-red-600">Remove</button>
 </td>
-
 <td>
 <button onclick="resetPoints('garnet')" class="btn bg-yellow-600">Reset</button>
 </td>
-
 </tr>
-
 </table>
-
 </div>
 
 <!-- ADD REWARD -->
 <div class="card">
-
 <h2 class="text-xl mb-4 text-purple-300">Add Reward</h2>
 
-<div class="flex flex-col md:flex-row gap-3">
-
-<input id="title" placeholder="Title" class="text-black p-2 flex-1">
-<input id="description" placeholder="Description" class="text-black p-2 flex-1">
-<input id="cost" placeholder="Energy" class="text-black p-2 w-full md:w-32">
+<input id="title" placeholder="Title" class="text-black p-2 w-full mb-2">
+<input id="description" placeholder="Description" class="text-black p-2 w-full mb-2">
+<input id="cost" placeholder="Energy" class="text-black p-2 w-full mb-2">
 
 <button onclick="addReward()" class="btn bg-purple-600">Add</button>
-
-</div>
-
 </div>
 
 <!-- REWARDS -->
 <div class="card">
-
 <h2 class="text-xl mb-4 text-purple-300">Rewards</h2>
-
 <div id="rewardsList"></div>
-
-<button onclick="deleteAllRewards()" class="btn bg-red-700 mt-4">
-Delete All Rewards
-</button>
-
 </div>
 
-<!-- ENERGY LEDGER -->
+<!-- LEDGER -->
 <div class="card">
-
 <h2 class="text-xl mb-4 text-cyan-300">Energy Ledger</h2>
-
 <div id="purchaseList"></div>
-
-<button onclick="deleteAllPurchases()" class="btn bg-red-700 mt-4">
-Delete All Ledger
-</button>
-
 </div>
 
 <script>
+const client = supabase.createClient(
+"https://hqsoabsocbulfrcbgxlz.supabase.co",
+"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OTIzNjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4"
+);
 
-/* SUPABASE */
-const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OTIzNjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4";
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const USER_ID = 1;
-
-/* LOAD POINTS */
+/* POINTS */
 async function loadPoints(){
 let {data}=await client.from("users_data").select("*").eq("id",1).single();
 garnetPoints.innerText=data.garnet;
@@ -174,41 +132,30 @@ sapphirePoints.innerText=data.sapphire;
 }
 loadPoints();
 
-/* POINT FUNCTIONS */
+function capitalize(s){
+return s.charAt(0).toUpperCase()+s.slice(1);
+}
+
 async function addPoints(type){
 let val=parseInt(document.getElementById(`add${capitalize(type)}`).value)||0;
-
 let {data}=await client.from("users_data").select("*").eq("id",1).single();
 
 await client.from("users_data").update({
 [type]:data[type]+val
 }).eq("id",1);
 
-await client.from("purchases").insert({
-user_id:1,
-created_at:new Date(),
-message:`God added ${val} energy to ${capitalize(type)}`
-});
-
-loadPoints();loadPurchases();
+loadPoints();
 }
 
 async function removePoints(type){
 let val=parseInt(document.getElementById(`remove${capitalize(type)}`).value)||0;
-
 let {data}=await client.from("users_data").select("*").eq("id",1).single();
 
 await client.from("users_data").update({
 [type]:Math.max(0,data[type]-val)
 }).eq("id",1);
 
-await client.from("purchases").insert({
-user_id:1,
-created_at:new Date(),
-message:`God removed ${val} energy from ${capitalize(type)}`
-});
-
-loadPoints();loadPurchases();
+loadPoints();
 }
 
 async function resetPoints(type){
@@ -216,26 +163,54 @@ await client.from("users_data").update({[type]:0}).eq("id",1);
 loadPoints();
 }
 
-function capitalize(s){
-return s.charAt(0).toUpperCase()+s.slice(1);
-}
-
 /* REWARDS */
 async function loadRewards(){
-let {data}=await client.from("rewards").select("*");
+let { data } = await client.from("rewards").select("*");
 
-let c=document.getElementById("rewardsList");
-c.innerHTML="";
+let container = document.getElementById("rewardsList");
 
-data.forEach(r=>{
-c.innerHTML+=`
-<div class="flex justify-between border-b border-gray-700 py-2">
-<span>${r.title} (${r.cost})</span>
-<button onclick="deleteReward(${r.id})" class="text-red-400">Delete</button>
-</div>`;
+container.innerHTML = `
+<div class="flex gap-2 mb-3">
+<input type="checkbox" id="selectAllRewards" onclick="toggleAllRewards(this)">
+<button onclick="deleteSelectedRewards()" class="bg-red-600 px-3 py-1 rounded">Delete Selected</button>
+</div>
+`;
+
+data.forEach(r => {
+container.innerHTML += `
+<div class="flex justify-between py-2">
+<div>
+<input type="checkbox" class="rewardCheckbox" value="${r.id}">
+${r.title} (${r.cost})
+</div>
+<button onclick="deleteReward(${r.id})">Delete</button>
+</div>
+`;
 });
 }
 loadRewards();
+
+function toggleAllRewards(source){
+document.querySelectorAll(".rewardCheckbox").forEach(cb=>{
+cb.checked=source.checked;
+});
+}
+
+async function deleteSelectedRewards(){
+let selected=[...document.querySelectorAll(".rewardCheckbox:checked")];
+
+if(selected.length===0){alert("Select first");return;}
+
+for(let cb of selected){
+await client.from("rewards").delete().eq("id",cb.value);
+}
+loadRewards();
+}
+
+async function deleteReward(id){
+await client.from("rewards").delete().eq("id",id);
+loadRewards();
+}
 
 async function addReward(){
 await client.from("rewards").insert({
@@ -246,65 +221,54 @@ cost:parseInt(cost.value)
 loadRewards();
 }
 
-async function deleteReward(id){
-await client.from("rewards").delete().eq("id",id);
-loadRewards();
-}
-
-async function deleteAllRewards(){
-if(confirm("Delete all rewards?")){
-await client.from("rewards").delete().neq("id",0);
-loadRewards();
-}
-}
-
 /* LEDGER */
 async function loadPurchases(){
-let {data}=await client.from("purchases").select("*").order("created_at",{ascending:false});
+let { data } = await client.from("purchases").select("*");
 
-let c=document.getElementById("purchaseList");
-c.innerHTML="";
+let container = document.getElementById("purchaseList");
+
+container.innerHTML = `
+<div class="flex gap-2 mb-3">
+<input type="checkbox" id="selectAllLedger" onclick="toggleAllLedger(this)">
+<button onclick="deleteSelectedPurchases()" class="bg-red-600 px-3 py-1 rounded">Delete Selected</button>
+</div>
+`;
 
 data.forEach(p=>{
-let msg = p.message || `Action performed (ID: ${p.id})`;
-
-c.innerHTML+=`
-<div class="flex flex-col md:flex-row md:justify-between md:items-center border-b border-gray-800 py-3 gap-2">
-
-<span>${msg}</span>
-
-<div class="flex items-center gap-4">
-
-<span class="text-gray-400 text-xs md:text-sm">
-${new Date(p.created_at).toLocaleString()}
-</span>
-
-<button onclick="deletePurchase(${p.id})"
-class="text-red-400 hover:text-red-600 text-xs md:text-sm">
-Delete
-</button>
-
+container.innerHTML+=`
+<div class="flex justify-between py-2">
+<div>
+<input type="checkbox" class="ledgerCheckbox" value="${p.id}">
+${p.message}
 </div>
-
-</div>`;
+<button onclick="deletePurchase(${p.id})">Delete</button>
+</div>
+`;
 });
 }
 loadPurchases();
 
+function toggleAllLedger(source){
+document.querySelectorAll(".ledgerCheckbox").forEach(cb=>{
+cb.checked=source.checked;
+});
+}
+
+async function deleteSelectedPurchases(){
+let selected=[...document.querySelectorAll(".ledgerCheckbox:checked")];
+
+if(selected.length===0){alert("Select first");return;}
+
+for(let cb of selected){
+await client.from("purchases").delete().eq("id",cb.value);
+}
+loadPurchases();
+}
+
 async function deletePurchase(id){
-if(confirm("Delete this entry?")){
 await client.from("purchases").delete().eq("id",id);
 loadPurchases();
 }
-}
-
-async function deleteAllPurchases(){
-if(confirm("Delete all ledger?")){
-await client.from("purchases").delete().neq("id",0);
-loadPurchases();
-}
-}
-
 </script>
 
 </body>
