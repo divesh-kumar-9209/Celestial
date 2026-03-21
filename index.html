@@ -1,254 +1,286 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<link rel="manifest" href="manifest.json">
-<title>Celestial Portal</title>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <title>Celestial Portal</title>
 
-<link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+    <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 
-#spaceCanvas{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-z-index:0;
-pointer-events:none;
-}
+    <style>
+        #spaceCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-body{
-background:linear-gradient(140deg,#020617,#1e1b4b,#020617,#4c1d95);
-background-size:400% 400%;
-animation:cosmic 30s ease infinite;
-overflow-x:hidden;
-touch-action:none;
-}
+        body {
+            background: linear-gradient(140deg, #020617, #1e1b4b, #020617, #4c1d95);
+            background-size: 400% 400%;
+            animation: cosmic 30s ease infinite;
+            overflow-x: hidden;
+            touch-action: none;
+            color: white;
+        }
 
-@keyframes cosmic{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-}
+        @keyframes cosmic {
+            0% {
+                background-position: 0% 50%;
+            }
 
-@keyframes float{
-0%{transform:translateY(0px);}
-50%{transform:translateY(-12px);}
-100%{transform:translateY(0px);}
-}
+            50% {
+                background-position: 100% 50%;
+            }
 
-@keyframes glow{
-0%{box-shadow:0 0 10px #7dd3fc;}
-50%{box-shadow:0 0 40px #c084fc;}
-100%{box-shadow:0 0 10px #7dd3fc;}
-}
+            100% {
+                background-position: 0% 50%;
+            }
+        }
 
-@keyframes shine{
-0%{transform:translateX(-100%);}
-100%{transform:translateX(300%);}
-}
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
 
-.titleGlow{
-text-shadow:
-0 0 15px rgba(125,211,252,0.9),
-0 0 50px rgba(192,132,252,0.8);
-}
+            50% {
+                transform: translateY(-12px);
+            }
 
-</style>
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 10px rgba(125, 211, 252, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 40px rgba(192, 132, 252, 0.8);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(125, 211, 252, 0.5);
+            }
+        }
+
+        .titleGlow {
+            text-shadow:
+                0 0 15px rgba(125, 211, 252, 0.9),
+                0 0 50px rgba(192, 132, 252, 0.8);
+        }
+
+        /* FIXED ANIMATIONS */
+        .cardFloat {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .cardHover {
+            transition: all 0.4s ease;
+        }
+
+        .cardHover:hover {
+            transform: scale(1.08);
+        }
+
+        /* GLOW EFFECT */
+        .cardGlow::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            opacity: 0;
+            transition: 0.4s;
+        }
+
+        .cardGlow:hover::before {
+            opacity: 1;
+            animation: glow 2s infinite;
+        }
+    </style>
 
 </head>
 
-<body class="text-white min-h-screen flex items-center justify-center">
+<body class="min-h-screen flex items-center justify-center">
 
-<canvas id="spaceCanvas"></canvas>
+    <canvas id="spaceCanvas"></canvas>
 
-<!-- MAIN CENTER WRAPPER -->
-<div class="relative z-10 w-full max-w-6xl flex flex-col items-center justify-center text-center px-4">
+    <!-- MAIN -->
+    <div class="relative z-10 w-full max-w-6xl flex flex-col items-center justify-center text-center px-4">
 
-<!-- HEADER -->
-<div class="mb-10">
+        <!-- HEADER -->
+        <div class="mb-10">
 
-<h1 class="text-3xl md:text-5xl font-bold text-cyan-300 tracking-widest titleGlow">
-Celestial Portal
-</h1>
+            <h1 class="text-3xl md:text-5xl font-bold text-cyan-300 tracking-widest titleGlow">
+                Celestial Portal
+            </h1>
 
-<p class="text-purple-300 mt-3 text-sm md:text-lg">
-Choose Your Realm of Power
-</p>
+            <p class="text-purple-300 mt-3 text-sm md:text-lg">
+                Choose Your Realm of Power
+            </p>
 
-</div>
+        </div>
 
-<!-- CARDS -->
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 w-full">
+        <!-- CARDS -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 w-full">
 
-<!-- Garnet -->
-<a href="garnet.html"
-class="relative group bg-red-500/10 backdrop-blur-xl border border-red-400/30
-p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-red-400
-shadow-xl hover:shadow-red-400/40 animate-[float_6s_ease-in-out_infinite] text-center">
+            <!-- Garnet -->
+            <a href="garnet.html" onclick="playFX()" class="relative group cardGlow cardFloat cardHover bg-red-500/10 backdrop-blur-xl border border-red-400/30
+p-6 rounded-2xl shadow-xl hover:shadow-red-400/40 text-center">
 
-<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
-style="animation: glow 2s infinite;"></div>
+                <h2 class="text-xl font-semibold text-red-300 mb-3">Garnet Core</h2>
+                <p class="text-gray-300 text-sm">Harness raw energy power</p>
 
-<h2 class="text-xl font-semibold text-red-300 mb-3">Garnet Core</h2>
+            </a>
 
-<p class="text-gray-300 text-sm">Harness raw energy power</p>
+            <!-- Sapphire -->
+            <a href="sapphire.html" onclick="playFX()" class="relative group cardGlow cardFloat cardHover bg-blue-500/10 backdrop-blur-xl border border-blue-400/30
+p-6 rounded-2xl shadow-xl hover:shadow-blue-400/40 text-center">
 
-</a>
+                <h2 class="text-xl font-semibold text-blue-300 mb-3">Sapphire Chamber</h2>
+                <p class="text-gray-300 text-sm">Channel refined energy</p>
 
-<!-- Sapphire -->
-<a href="sapphire.html"
-class="relative group bg-blue-500/10 backdrop-blur-xl border border-blue-400/30
-p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-blue-400
-shadow-xl hover:shadow-blue-400/40 animate-[float_6s_ease-in-out_infinite] text-center">
+            </a>
 
-<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
-style="animation: glow 2s infinite;"></div>
+            <!-- Store -->
+            <a href="store.html" onclick="playFX()" class="relative group cardGlow cardFloat cardHover bg-purple-500/10 backdrop-blur-xl border border-purple-400/30
+p-6 rounded-2xl shadow-xl hover:shadow-purple-400/40 text-center">
 
-<h2 class="text-xl font-semibold text-blue-300 mb-3">Sapphire Chamber</h2>
+                <h2 class="text-xl font-semibold text-purple-300 mb-3">Celestial Vault</h2>
+                <p class="text-gray-300 text-sm">Acquire powerful artifacts</p>
 
-<p class="text-gray-300 text-sm">Channel refined energy</p>
+            </a>
 
-</a>
+            <!-- Admin -->
+            <a href="admin.html" onclick="playFX()" class="relative group cardGlow cardFloat cardHover bg-green-500/10 backdrop-blur-xl border border-green-400/30
+p-6 rounded-2xl shadow-xl hover:shadow-green-400/40 text-center">
 
-<!-- Store -->
-<a href="store.html"
-class="relative group bg-purple-500/10 backdrop-blur-xl border border-purple-400/30
-p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-purple-400
-shadow-xl hover:shadow-purple-400/40 animate-[float_6s_ease-in-out_infinite] text-center">
+                <h2 class="text-xl font-semibold text-green-300 mb-3">Admin Panel</h2>
+                <p class="text-gray-300 text-sm">Control the system</p>
 
-<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
-style="animation: glow 2s infinite;"></div>
+            </a>
 
-<h2 class="text-xl font-semibold text-purple-300 mb-3">Celestial Vault</h2>
+        </div>
 
-<p class="text-gray-300 text-sm">Acquire powerful artifacts</p>
+    </div>
 
-</a>
+    <script>
 
-<!-- Admin -->
-<a href="admin.html"
-class="relative group bg-green-500/10 backdrop-blur-xl border border-green-400/30
-p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-green-400
-shadow-xl hover:shadow-green-400/40 animate-[float_6s_ease-in-out_infinite] text-center">
+        /* SOUND + VIBRATION */
+        const clickSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3");
 
-<div class="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition duration-500"
-style="animation: glow 2s infinite;"></div>
+        function playFX() {
+            clickSound.play();
 
-<h2 class="text-xl font-semibold text-green-300 mb-3">Admin Panel</h2>
+            if (navigator.vibrate) {
+                navigator.vibrate(80);
+            }
+        }
 
-<p class="text-gray-300 text-sm">Control the system</p>
+        /* CANVAS */
 
-</a>
+        const canvas = document.getElementById("spaceCanvas");
+        const ctx = canvas.getContext("2d");
 
-</div>
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener("resize", resize);
 
-</div>
+        let mouse = { x: null, y: null };
 
-<script>
+        window.addEventListener("mousemove", e => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
 
-/* ================= CANVAS ================= */
+        window.addEventListener("touchmove", e => {
+            let t = e.touches[0];
+            mouse.x = t.clientX;
+            mouse.y = t.clientY;
+        });
 
-const canvas=document.getElementById("spaceCanvas");
-const ctx=canvas.getContext("2d");
+        class Star {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.2;
+                this.vy = (Math.random() - 0.5) * 0.2;
+                this.size = Math.random() * 2 + 1;
+            }
+            update() { this.x += this.vx; this.y += this.vy; }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(125,211,252,0.9)";
+                ctx.shadowBlur = 8;
+                ctx.fill();
+            }
+        }
 
-function resize(){
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-}
-resize();
-window.addEventListener("resize",resize);
+        let stars = [];
+        for (let i = 0; i < 140; i++) stars.push(new Star());
 
-let mouse={x:null,y:null};
+        function connectStars() {
+            for (let a = 0; a < stars.length; a++) {
+                for (let b = a; b < stars.length; b++) {
+                    let dx = stars[a].x - stars[b].x;
+                    let dy = stars[a].y - stars[b].y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.strokeStyle = "rgba(192,132,252," + (1 - dist / 120) + ")";
+                        ctx.beginPath();
+                        ctx.moveTo(stars[a].x, stars[a].y);
+                        ctx.lineTo(stars[b].x, stars[b].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+        }
 
-window.addEventListener("mousemove",e=>{
-mouse.x=e.clientX;
-mouse.y=e.clientY;
-});
+        function mouseConstellation() {
+            stars.forEach(star => {
+                let dx = star.x - mouse.x;
+                let dy = star.y - mouse.y;
+                let dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 150) {
+                    ctx.beginPath();
+                    ctx.moveTo(star.x, star.y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.strokeStyle = "rgba(236,72,153,0.7)";
+                    ctx.stroke();
+                }
+            });
+        }
 
-window.addEventListener("touchmove",e=>{
-let t=e.touches[0];
-mouse.x=t.clientX;
-mouse.y=t.clientY;
-});
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-/* stars */
+            stars.forEach(s => {
+                s.update();
+                s.draw();
+            });
 
-class Star{
-constructor(){
-this.x=Math.random()*canvas.width;
-this.y=Math.random()*canvas.height;
-this.vx=(Math.random()-0.5)*0.2;
-this.vy=(Math.random()-0.5)*0.2;
-this.size=Math.random()*2+1;
-}
-update(){this.x+=this.vx;this.y+=this.vy;}
-draw(){
-ctx.beginPath();
-ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-ctx.fillStyle="rgba(125,211,252,0.9)";
-ctx.shadowBlur=8;
-ctx.fill();
-}
-}
+            connectStars();
+            mouseConstellation();
 
-let stars=[];
-for(let i=0;i<140;i++) stars.push(new Star());
+            requestAnimationFrame(animate);
+        }
 
-function connectStars(){
-for(let a=0;a<stars.length;a++){
-for(let b=a;b<stars.length;b++){
-let dx=stars[a].x-stars[b].x;
-let dy=stars[a].y-stars[b].y;
-let dist=Math.sqrt(dx*dx+dy*dy);
-if(dist<120){
-ctx.strokeStyle="rgba(192,132,252,"+(1-dist/120)+")";
-ctx.beginPath();
-ctx.moveTo(stars[a].x,stars[a].y);
-ctx.lineTo(stars[b].x,stars[b].y);
-ctx.stroke();
-}
-}
-}
-}
+        animate();
 
-function mouseConstellation(){
-stars.forEach(star=>{
-let dx=star.x-mouse.x;
-let dy=star.y-mouse.y;
-let dist=Math.sqrt(dx*dx+dy*dy);
-if(dist<150){
-ctx.beginPath();
-ctx.moveTo(star.x,star.y);
-ctx.lineTo(mouse.x,mouse.y);
-ctx.strokeStyle="rgba(236,72,153,0.7)";
-ctx.stroke();
-}
-});
-}
-
-function animate(){
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-stars.forEach(s=>{
-s.update();
-s.draw();
-});
-
-connectStars();
-mouseConstellation();
-
-requestAnimationFrame(animate);
-}
-
-animate();
-
-</script>
-
-
+    </script>
 
 </body>
+
 </html>
