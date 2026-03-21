@@ -109,7 +109,7 @@ Choose Your Realm of Power
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-12 w-full">
 
 <!-- Garnet -->
-<a href="garnet.html" onmouseenter="playHover()" onclick="handleClick(event, 'garnet.html')"
+<a href="garnet.html" onmouseover="playHover()" onclick="handleClick(event, 'garnet.html')"
 class="relative cardBase cardGlow cardFloat cardHover bg-red-900 bg-opacity-30 border border-red-400 p-6 rounded-2xl shadow-xl hover:shadow-red-400/40">
 
 <h2 class="text-xl font-semibold text-red-300 mb-3">Garnet Core</h2>
@@ -118,7 +118,7 @@ class="relative cardBase cardGlow cardFloat cardHover bg-red-900 bg-opacity-30 b
 </a>
 
 <!-- Sapphire -->
-<a href="sapphire.html" onmouseenter="playHover()" onclick="handleClick(event, 'sapphire.html')"
+<a href="sapphire.html" onmouseover="playHover()" onclick="handleClick(event, 'sapphire.html')"
 class="relative cardBase cardGlow cardFloat cardHover bg-blue-900 bg-opacity-30 border border-blue-400 p-6 rounded-2xl shadow-xl hover:shadow-blue-400/40">
 
 <h2 class="text-xl font-semibold text-blue-300 mb-3">Sapphire Chamber</h2>
@@ -127,7 +127,7 @@ class="relative cardBase cardGlow cardFloat cardHover bg-blue-900 bg-opacity-30 
 </a>
 
 <!-- Store -->
-<a href="store.html" onmouseenter="playHover()" onclick="handleClick(event, 'store.html')"
+<a href="store.html" onmouseover="playHover()" onclick="handleClick(event, 'store.html')"
 class="relative cardBase cardGlow cardFloat cardHover bg-purple-900 bg-opacity-30 border border-purple-400 p-6 rounded-2xl shadow-xl hover:shadow-purple-400/40">
 
 <h2 class="text-xl font-semibold text-purple-300 mb-3">Celestial Vault</h2>
@@ -136,7 +136,7 @@ class="relative cardBase cardGlow cardFloat cardHover bg-purple-900 bg-opacity-3
 </a>
 
 <!-- Admin -->
-<a href="admin.html" onmouseenter="playHover()" onclick="handleClick(event, 'admin.html')"
+<a href="admin.html" onmouseover="playHover()" onclick="handleClick(event, 'admin.html')"
 class="relative cardBase cardGlow cardFloat cardHover bg-green-900 bg-opacity-30 border border-green-400 p-6 rounded-2xl shadow-xl hover:shadow-green-400/40">
 
 <h2 class="text-xl font-semibold text-green-300 mb-3">Admin Panel</h2>
@@ -154,44 +154,34 @@ class="relative cardBase cardGlow cardFloat cardHover bg-green-900 bg-opacity-30
 let clickSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3");
 let hoverSound = new Audio("https://assets.mixkit.co/sfx/preview/mixkit-interface-hover-2566.mp3");
 
-let audioUnlocked = false;
-
-/* 🔓 UNLOCK AUDIO (VERY IMPORTANT) */
-function unlockAudio(){
-if(audioUnlocked) return;
-
-clickSound.play().then(()=>{
-clickSound.pause();
-clickSound.currentTime = 0;
-audioUnlocked = true;
-}).catch(()=>{});
-}
-
-/* 🔊 CLICK */
+/* 🔊 CLICK (FIXED) */
 function handleClick(e, url){
 e.preventDefault();
 
-unlockAudio();
-
+try{
 clickSound.currentTime = 0;
-clickSound.play().catch(()=>{});
+clickSound.play();
+}catch(err){}
 
+/* vibration */
 if(navigator.vibrate){
-navigator.vibrate([80,40,80]);
+navigator.vibrate(100);
 }
 
+/* delay navigation */
 setTimeout(()=>{
 window.location.href = url;
-}, 200);
+}, 250);
 }
 
-/* 🔊 HOVER */
+/* 🔊 HOVER (DESKTOP ONLY SAFE) */
 function playHover(){
-unlockAudio();
-
+try{
 hoverSound.currentTime = 0;
-hoverSound.play().catch(()=>{});
+hoverSound.play();
+}catch(err){}
 }
+
 /* CANVAS */
 
 const canvas=document.getElementById("spaceCanvas");
@@ -285,8 +275,7 @@ requestAnimationFrame(animate);
 }
 
 animate();
-document.addEventListener("click", unlockAudio, { once: true });
-document.addEventListener("touchstart", unlockAudio, { once: true });
+
 </script>
 
 </body>
