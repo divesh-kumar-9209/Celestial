@@ -69,9 +69,10 @@ text-shadow:
 <body class="text-white">
 
 <!-- ROLE POPUP -->
-<div id="rolePopup" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center">
+<div id="rolePopup" class="fixed inset-0 z-50 flex items-center justify-center"
+style="background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
 
-<div class="bg-purple-900/40 backdrop-blur-xl border border-purple-400/40 p-8 rounded-2xl text-center shadow-xl">
+<div class="bg-purple-900 bg-opacity-40 backdrop-blur-xl border border-purple-400/40 p-8 rounded-2xl text-center shadow-xl">
 
 <h2 class="text-2xl font-bold text-cyan-300 mb-6">
 Choose Your Form
@@ -99,24 +100,28 @@ Sapphire
 
 <!-- USER STATUS -->
 <div id="userStatus"
-class="fixed top-3 md:top-4 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl border backdrop-blur-lg text-center shadow-xl min-w-[180px]">
+class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 px-6 py-2 md:py-3 rounded-xl border backdrop-blur-lg text-center shadow-xl"
+style="min-width:180px; max-width:90%;">
 Loading...
 </div>
 
 <!-- BACK BUTTON -->
+<div class="fixed bottom-4 left-1/2 transform -translate-x-1/2 flex gap-4 z-50">
+
 <button onclick="goBack()"
-class="fixed bottom-4 left-6 md:left-10 z-50 px-6 py-3 rounded-full font-bold
-bg-red-500/10 backdrop-blur-xl border border-red-400/30
-transition duration-500 hover:scale-110 hover:border-red-400
-shadow-xl hover:shadow-red-400/40">
+class="px-5 py-2 rounded-full font-bold
+bg-red-500 bg-opacity-10 backdrop-blur-xl border border-red-400
+transition duration-500 hover:scale-110 shadow-lg">
 Back
 </button>
 
-<!-- SWITCH ROLE -->
 <button onclick="changeRole()"
-class="fixed bottom-4 right-6 md:right-10 z-50 bg-purple-600 px-6 py-3 rounded-xl shadow-lg hover:scale-110 transition">
+class="px-5 py-2 rounded-full font-bold
+bg-purple-600 hover:scale-110 transition shadow-lg">
 Switch Role
 </button>
+
+</div>
 
 <div id="toast"
 class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none transition duration-500">
@@ -129,7 +134,7 @@ class="fixed top-10 left-1/2 -translate-x-1/2 z-50 opacity-0 pointer-events-none
 
 </div>
 
-<div class="relative z-10 w-full max-w-6xl text-center mt-16 md:mt-20">
+<div class="relative z-10 w-full max-w-6xl text-center mt-20 md:mt-24 px-2">
 
 <div class="pt-10 pb-6 px-4">
 
@@ -187,7 +192,7 @@ updateUserStatus();
 /* SELECT ROLE */
 function selectRole(role){
 USER_TYPE = role;
-localStorage.setItem("userType", role);
+
 document.getElementById("rolePopup").style.display = "none";
 updateUserStatus();
 }
@@ -246,7 +251,7 @@ container.innerHTML = "";
 data.forEach(r => {
 
 container.innerHTML += `
-<div class="relative group bg-purple-500/10 backdrop-blur-xl border border-purple-400/30
+<div class="relative group bg-purple-500 bg-opacity-10 backdrop-blur-xl border border-purple-400
 p-6 rounded-2xl transition duration-500 hover:scale-110 hover:border-purple-400
 shadow-xl hover:shadow-purple-400/40 animate-[float_6s_ease-in-out_infinite]">
 
@@ -475,8 +480,8 @@ requestAnimationFrame(animate);
 animate();
 
 function changeRole(){
-localStorage.removeItem("userType");
-location.reload();
+USER_TYPE = null;
+document.getElementById("rolePopup").style.display = "flex";
 }
 
 function showToast(message){

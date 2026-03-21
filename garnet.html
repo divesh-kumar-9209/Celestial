@@ -11,6 +11,12 @@
 
 <style>
 
+.titleGlow{
+text-shadow:
+0 0 15px rgba(255,120,120,0.9),
+0 0 50px rgba(255,0,0,0.8);
+}
+
 body {
   touch-action: none;
 }
@@ -67,14 +73,14 @@ transform:scale(1.1);
 <div class="relative z-10 w-full max-w-6xl flex flex-col items-center justify-center text-center px-4">
 
 <!-- HEADER -->
-<div class="flex flex-col md:flex-row items-center justify-between w-full mb-8 gap-4">
+<div class="relative flex flex-col items-center justify-center w-full mb-8 gap-4 text-center">
 
-<h1 class="text-2xl md:text-3xl font-bold text-red-400 drop-shadow-lg">
+<h1 class="text-3xl md:text-4xl font-bold text-red-300 tracking-widest titleGlow">
 Garnet Core
 </h1>
 
 <a href="store.html"
-class="px-4 md:px-5 py-2 rounded-lg bg-green-500 hover:scale-110 transition shadow-lg font-semibold">
+class="absolute top-0 right-0 mt-2 mr-2 md:mt-0 md:mr-0 px-4 md:px-5 py-2 rounded-lg bg-green-500 hover:scale-110 transition shadow-lg font-semibold">
 Market
 </a>
 
@@ -84,7 +90,7 @@ Market
 <div class="w-full grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
 
 <div id="sapphireBox"
-class="bg-blue-900/40 backdrop-blur p-6 md:p-10 rounded-xl border border-blue-400 shadow-[0_0_30px_rgba(100,150,255,0.6)] transition hover:scale-105">
+class="bg-blue-900 bg-opacity-40 backdrop-blur p-6 md:p-10 rounded-xl border border-blue-400 shadow-lg shadow-lg shadow-lg shadow-lg shadow-[0_0_30px_rgba(100,150,255,0.6)] transition hover:scale-105">
 
 <h2 class="text-sm md:text-lg text-blue-300 font-semibold">
 Sapphire Energy
@@ -98,7 +104,7 @@ class="text-4xl md:text-6xl font-extrabold text-blue-300 drop-shadow-[0_0_20px_r
 </div>
 
 <div id="garnetBox"
-class="bg-yellow-500/10 backdrop-blur p-6 md:p-10 rounded-xl border border-yellow-400/40 shadow-[0_0_30px_rgba(255,200,0,0.4)] transition hover:scale-105">
+class="bg-yellow-500 bg-opacity-10 backdrop-blur p-6 md:p-10 rounded-xl border border-yellow-400/40 shadow-[0_0_30px_rgba(255,200,0,0.4)] transition hover:scale-105">
 
 <h2 class="text-sm md:text-lg text-yellow-300 font-semibold">
 Garnet Energy
@@ -233,10 +239,14 @@ ctx.stroke();
 }
 
 function mouseConstellation(){
+
+if(mouse.x === null || mouse.y === null) return;
+
 stars.forEach(star=>{
 let dx=star.x-mouse.x;
 let dy=star.y-mouse.y;
 let dist=Math.sqrt(dx*dx+dy*dy);
+
 if(dist<150){
 ctx.beginPath();
 ctx.moveTo(star.x,star.y);
@@ -314,41 +324,18 @@ let cy=(sy+ey)/2-220;
 let x=(1-t)*(1-t)*sx + 2*(1-t)*t*cx + t*t*ex;
 let y=(1-t)*(1-t)*sy + 2*(1-t)*t*cy + t*t*ey;
 
-let r=Math.floor(120+135*t);
-let gcol=Math.floor(180*(1-t));
+let r=Math.floor(255*t);
+let gcol=Math.floor(100*t + 120*(1-t));
 let b=Math.floor(255*(1-t));
 
 let outer=bctx.createRadialGradient(x,y,0,x,y,120);
 outer.addColorStop(0,`rgba(${r},${gcol},${b},0.5)`);
 outer.addColorStop(1,"rgba(0,0,0,0)");
+
 bctx.fillStyle=outer;
 bctx.beginPath();
 bctx.arc(x,y,120,0,Math.PI*2);
 bctx.fill();
-
-let mid=bctx.createRadialGradient(x,y,0,x,y,70);
-mid.addColorStop(0,"white");
-mid.addColorStop(1,`rgba(${r},${gcol},${b},0.9)`);
-bctx.fillStyle=mid;
-bctx.beginPath();
-bctx.arc(x,y,70,0,Math.PI*2);
-bctx.fill();
-
-bctx.beginPath();
-bctx.arc(x,y,18,0,Math.PI*2);
-bctx.fillStyle="white";
-bctx.shadowBlur=50;
-bctx.fill();
-
-for(let i=0;i<12;i++){
-let angle=(Date.now()*0.002+i)*Math.PI/6;
-let fx=x+Math.cos(angle)*65;
-let fy=y+Math.sin(angle)*65;
-bctx.beginPath();
-bctx.arc(fx,fy,Math.random()*6+3,0,Math.PI*2);
-bctx.fillStyle=`rgba(${r},${gcol},${b},0.7)`;
-bctx.fill();
-}
 
 if(t>=1){
 orbActive=false;
