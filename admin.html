@@ -9,243 +9,254 @@
 <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
+<style>
+
+body{
+background:linear-gradient(140deg,#020617,#0f172a,#020617);
+background-size:400% 400%;
+animation:cosmic 25s ease infinite;
+}
+
+@keyframes cosmic{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.card{
+background:rgba(30,41,59,0.5);
+backdrop-filter:blur(10px);
+border:1px solid rgba(148,163,184,0.2);
+border-radius:16px;
+padding:16px;
+}
+
+.btn{
+padding:6px 12px;
+border-radius:8px;
+font-weight:600;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:scale(1.05);
+}
+
+</style>
+
 </head>
 
-<body class="bg-black text-white min-h-screen p-10">
+<body class="text-white p-4 md:p-10">
 
-<h1 class="text-3xl font-bold mb-10">
+<h1 class="text-2xl md:text-3xl font-bold mb-8 text-center">
 Admin Panel
 </h1>
 
 <!-- USERS -->
+<div class="card mb-8">
 
-<h2 class="text-xl mb-4">Users</h2>
+<h2 class="text-lg md:text-xl mb-4 text-cyan-300">Users</h2>
 
-<table class="w-full mb-10">
+<div class="grid gap-6">
 
-<tr class="text-left border-b border-gray-700">
-<th>Name</th>
-<th>Points</th>
-<th>Add</th>
-<th>Remove</th>
-<th>Reset</th>
-</tr>
+<!-- SAPPHIRE -->
+<div class="flex flex-col md:flex-row justify-between items-center gap-4">
 
-<tr class="border-b border-gray-800">
+<div>
+<p class="text-blue-300 font-semibold">Sapphire</p>
+<p id="sapphirePoints" class="text-xl font-bold">0</p>
+</div>
 
-<td>Sapphire</td>
-<td id="sapphirePoints">0</td>
+<div class="flex gap-2 flex-wrap">
 
-<td>
-<input id="addSapphire" placeholder="points" class="text-black w-20">
-<button onclick="addPoints('sapphire')" class="bg-green-600 px-2 py-1">Add</button>
-</td>
+<input id="addSapphire" placeholder="points" class="text-black w-20 px-2">
 
-<td>
-<input id="removeSapphire" placeholder="points" class="text-black w-20">
-<button onclick="removePoints('sapphire')" class="bg-red-600 px-2 py-1">Remove</button>
-</td>
+<button onclick="addPoints('sapphire')" class="btn bg-green-600">+ Add</button>
+<button onclick="quickAdd('sapphire',10)" class="btn bg-green-500">+10</button>
 
-<td>
-<button onclick="resetPoints('sapphire')" class="bg-yellow-600 px-2 py-1">Reset</button>
-</td>
+<input id="removeSapphire" placeholder="points" class="text-black w-20 px-2">
 
-</tr>
+<button onclick="removePoints('sapphire')" class="btn bg-red-600">- Remove</button>
+<button onclick="quickRemove('sapphire',10)" class="btn bg-red-500">-10</button>
 
-<tr class="border-b border-gray-800">
-
-<td>Garnet</td>
-<td id="garnetPoints">0</td>
-
-<td>
-<input id="addGarnet" placeholder="points" class="text-black w-20">
-<button onclick="addPoints('garnet')" class="bg-green-600 px-2 py-1">Add</button>
-</td>
-
-<td>
-<input id="removeGarnet" placeholder="points" class="text-black w-20">
-<button onclick="removePoints('garnet')" class="bg-red-600 px-2 py-1">Remove</button>
-</td>
-
-<td>
-<button onclick="resetPoints('garnet')" class="bg-yellow-600 px-2 py-1">Reset</button>
-</td>
-
-</tr>
-
-</table>
-
-<!-- ADD REWARD -->
-
-<h2 class="text-xl mb-4">Add Reward</h2>
-
-<div class="mb-10 flex gap-4">
-
-<input id="title" placeholder="Title" class="text-black p-2">
-<input id="description" placeholder="Description" class="text-black p-2">
-<input id="cost" placeholder="Points" class="text-black p-2">
-
-<button onclick="addReward()" class="bg-green-600 px-4 py-2">
-Add
-</button>
+<button onclick="resetPoints('sapphire')" class="btn bg-yellow-600">Reset</button>
 
 </div>
 
-<!-- REWARD LIST -->
+</div>
 
-<h2 class="text-xl mb-4">Rewards</h2>
+<!-- GARNET -->
+<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+
+<div>
+<p class="text-red-300 font-semibold">Garnet</p>
+<p id="garnetPoints" class="text-xl font-bold">0</p>
+</div>
+
+<div class="flex gap-2 flex-wrap">
+
+<input id="addGarnet" placeholder="points" class="text-black w-20 px-2">
+
+<button onclick="addPoints('garnet')" class="btn bg-green-600">+ Add</button>
+<button onclick="quickAdd('garnet',10)" class="btn bg-green-500">+10</button>
+
+<input id="removeGarnet" placeholder="points" class="text-black w-20 px-2">
+
+<button onclick="removePoints('garnet')" class="btn bg-red-600">- Remove</button>
+<button onclick="quickRemove('garnet',10)" class="btn bg-red-500">-10</button>
+
+<button onclick="resetPoints('garnet')" class="btn bg-yellow-600">Reset</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ADD REWARD -->
+<div class="card mb-8">
+
+<h2 class="text-lg md:text-xl mb-4 text-purple-300">Add Reward</h2>
+
+<div class="flex flex-col md:flex-row gap-3">
+
+<input id="title" placeholder="Title" class="text-black p-2 flex-1">
+<input id="description" placeholder="Description" class="text-black p-2 flex-1">
+<input id="cost" placeholder="Energy Cost" class="text-black p-2 w-full md:w-32">
+
+<button onclick="addReward()" class="btn bg-purple-600">Add</button>
+
+</div>
+
+</div>
+
+<!-- REWARDS -->
+<div class="card mb-8">
+
+<h2 class="text-lg md:text-xl mb-4 text-purple-300">Rewards</h2>
 
 <div id="rewardsList"></div>
 
-<div class="mt-4">
-<button onclick="deleteAllRewards()" class="bg-red-700 px-4 py-2">
+<button onclick="deleteAllRewards()" class="btn bg-red-700 mt-4">
 Delete All Rewards
 </button>
+
 </div>
 
-<!-- PURCHASE HISTORY -->
+<!-- ENERGY LEDGER -->
+<div class="card">
 
-<h2 class="text-xl mt-12 mb-4">Purchase History</h2>
+<h2 class="text-lg md:text-xl mb-4 text-cyan-300">Energy Ledger</h2>
 
 <div id="purchaseList"></div>
 
+<button onclick="deleteAllPurchases()" class="btn bg-red-700 mt-4">
+Delete All Ledger
+</button>
+
+</div>
+
 <script>
 
-/* ================= SUPABASE ================= */
-
+/* SUPABASE */
 const SUPABASE_URL = "https://hqsoabsocbulfrcbgxlz.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhxc29hYnNvY2J1bGZyY2JneGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM2NjAyMTgsImV4cCI6MjA4OTIzNjIxOH0.Rim6h7dRgkce3IzSPMNSSzwImAM0sagho0I4X8MjuW4";
 
 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const USER_ID = 1;
-/* ================= LOAD POINTS ================= */
 
+/* LOAD POINTS */
 async function loadPoints(){
-
-let { data } = await client
-.from("users_data")
-.select("*")
-.eq("id", USER_ID)
-.single();
-
-document.getElementById("garnetPoints").innerText = data.garnet;
-document.getElementById("sapphirePoints").innerText = data.sapphire;
-
+let {data}=await client.from("users_data").select("*").eq("id",1).single();
+garnetPoints.innerText=data.garnet;
+sapphirePoints.innerText=data.sapphire;
 }
-
 loadPoints();
 
-/* ================= POINT FUNCTIONS ================= */
+/* QUICK */
+function quickAdd(type,val){
+document.getElementById(`add${capitalize(type)}`).value=val;
+addPoints(type);
+}
 
+function quickRemove(type,val){
+document.getElementById(`remove${capitalize(type)}`).value=val;
+removePoints(type);
+}
+
+/* ADD */
 async function addPoints(type){
+let val=parseInt(document.getElementById(`add${capitalize(type)}`).value)||0;
 
-let val = parseInt(document.getElementById(`add${capitalize(type)}`).value);
-
-let { data } = await client.from("users_data").select("*").eq("id", 1).single();
+let {data}=await client.from("users_data").select("*").eq("id",1).single();
 
 await client.from("users_data").update({
-[type]: data[type] + val
-}).eq("id", 1);
-
-/* SAVE HISTORY */
-let message = `God manifested ${val} energy to ${capitalize(type)}`;
+[type]:data[type]+val
+}).eq("id",1);
 
 await client.from("purchases").insert({
-user_id: 1,
-reward_id: null,
-created_at: new Date(),
-message: message,
-actor: "god"
+user_id:1,
+created_at:new Date(),
+message:`God added ${val} energy to ${capitalize(type)}`
 });
 
-loadPoints();
-loadPurchases();
-
+loadPoints();loadPurchases();
 }
 
+/* REMOVE */
 async function removePoints(type){
+let val=parseInt(document.getElementById(`remove${capitalize(type)}`).value)||0;
 
-let val = parseInt(document.getElementById(`remove${capitalize(type)}`).value);
+let {data}=await client.from("users_data").select("*").eq("id",1).single();
 
-let { data } = await client.from("users_data").select("*").eq("id", 1).single();
-
-/* UPDATE */
 await client.from("users_data").update({
-[type]: Math.max(0, data[type] - val)
-}).eq("id", 1);
+[type]:Math.max(0,data[type]-val)
+}).eq("id",1);
 
-/* 🔥 MESSAGE */
-let message = `God removed ${val} energy from ${capitalize(type)}`;
-
-/* SAVE HISTORY */
 await client.from("purchases").insert({
-user_id: 1,
-reward_id: null,
-created_at: new Date(),
-message: message,
-actor: "god"
+user_id:1,
+created_at:new Date(),
+message:`God removed ${val} energy from ${capitalize(type)}`
 });
 
-loadPoints();
-loadPurchases();
-
+loadPoints();loadPurchases();
 }
 
+/* RESET */
 async function resetPoints(type){
-
-await client.from("users_data").update({
-[type]: 0
-}).eq("id", USER_ID);
-
+await client.from("users_data").update({[type]:0}).eq("id",1);
 loadPoints();
-
 }
 
-function capitalize(str){
-return str.charAt(0).toUpperCase() + str.slice(1);
+function capitalize(s){
+return s.charAt(0).toUpperCase()+s.slice(1);
 }
 
-/* ================= REWARDS ================= */
-
+/* REWARDS */
 async function loadRewards(){
+let {data}=await client.from("rewards").select("*");
+let c=document.getElementById("rewardsList");
+c.innerHTML="";
 
-let { data } = await client.from("rewards").select("*");
-
-let container = document.getElementById("rewardsList");
-container.innerHTML = "";
-
-data.forEach(r => {
-
-container.innerHTML += `
+data.forEach(r=>{
+c.innerHTML+=`
 <div class="flex justify-between border-b border-gray-700 py-2">
-
-<span>${r.title} (${r.cost} points)</span>
-
-<button onclick="deleteReward(${r.id})" class="text-red-500">
-Delete
-</button>
-
-</div>
-`;
-
+<span>${r.title} (${r.cost})</span>
+<button onclick="deleteReward(${r.id})" class="text-red-400">Delete</button>
+</div>`;
 });
-
 }
-
 loadRewards();
 
 async function addReward(){
-
-let title = document.getElementById("title").value;
-let description = document.getElementById("description").value;
-let cost = parseInt(document.getElementById("cost").value);
-
 await client.from("rewards").insert({
-title, description, cost
+title:title.value,
+description:description.value,
+cost:parseInt(cost.value)
 });
-
 loadRewards();
-
 }
 
 async function deleteReward(id){
@@ -254,57 +265,38 @@ loadRewards();
 }
 
 async function deleteAllRewards(){
+if(confirm("Delete all rewards?")){
 await client.from("rewards").delete().neq("id",0);
 loadRewards();
 }
+}
 
-/* ================= PURCHASE HISTORY ================= */
-
+/* LEDGER */
 async function loadPurchases(){
+let {data}=await client.from("purchases").select("*").order("created_at",{ascending:false});
 
-let { data } = await client
-.from("purchases")
-.select("*")
-.order("created_at", { ascending: false });
+let c=document.getElementById("purchaseList");
+c.innerHTML="";
 
-let container = document.getElementById("purchaseList");
-container.innerHTML = "";
+data.forEach(p=>{
+let msg = p.message || `Action performed (ID: ${p.id})`;
 
-data.forEach(p => {
-
-container.innerHTML += `
+c.innerHTML+=`
 <div class="flex justify-between border-b border-gray-800 py-3">
-
-<span>
-User purchased item ${p.reward_id}
-</span>
-
-<div class="flex gap-4">
-
-<span class="text-gray-400 text-sm">
-${new Date(p.created_at).toLocaleString()}
-</span>
-
-<button onclick="deletePurchase(${p.id})" class="text-red-500">
-Delete
-</button>
-
-</div>
-
-</div>
-`;
-
+<span>${msg}</span>
+<span class="text-gray-400 text-sm">${new Date(p.created_at).toLocaleString()}</span>
+</div>`;
 });
-
 }
-
 loadPurchases();
 
-async function deletePurchase(id){
-await client.from("purchases").delete().eq("id",id);
+async function deleteAllPurchases(){
+if(confirm("Delete all ledger?")){
+await client.from("purchases").delete().neq("id",0);
 loadPurchases();
 }
-const USER_TYPE = localStorage.getItem("userType") || "garnet";
+}
+
 </script>
 
 </body>
