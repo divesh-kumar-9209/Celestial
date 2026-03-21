@@ -29,6 +29,7 @@ backdrop-filter:blur(10px);
 border:1px solid rgba(148,163,184,0.2);
 border-radius:16px;
 padding:16px;
+margin-bottom:20px;
 }
 
 .btn{
@@ -46,85 +47,83 @@ transform:scale(1.05);
 
 </head>
 
-<body class="text-white p-4 md:p-10">
+<body class="text-white min-h-screen p-4 md:p-10">
 
 <h1 class="text-2xl md:text-3xl font-bold mb-8 text-center">
 Admin Panel
 </h1>
 
 <!-- USERS -->
-<div class="card mb-8">
+<div class="card">
 
-<h2 class="text-lg md:text-xl mb-4 text-cyan-300">Users</h2>
+<h2 class="text-xl mb-4 text-cyan-300">Users</h2>
 
-<div class="grid gap-6">
+<table class="w-full text-sm md:text-base">
 
-<!-- SAPPHIRE -->
-<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+<tr class="border-b border-gray-700">
+<th>Name</th>
+<th>Points</th>
+<th>Add</th>
+<th>Remove</th>
+<th>Reset</th>
+</tr>
 
-<div>
-<p class="text-blue-300 font-semibold">Sapphire</p>
-<p id="sapphirePoints" class="text-xl font-bold">0</p>
-</div>
+<tr class="border-b border-gray-800">
 
-<div class="flex gap-2 flex-wrap">
+<td>Sapphire</td>
+<td id="sapphirePoints">0</td>
 
-<input id="addSapphire" placeholder="points" class="text-black w-20 px-2">
+<td>
+<input id="addSapphire" class="text-black w-16 px-1">
+<button onclick="addPoints('sapphire')" class="btn bg-green-600">Add</button>
+</td>
 
-<button onclick="addPoints('sapphire')" class="btn bg-green-600">+ Add</button>
-<button onclick="quickAdd('sapphire',10)" class="btn bg-green-500">+10</button>
+<td>
+<input id="removeSapphire" class="text-black w-16 px-1">
+<button onclick="removePoints('sapphire')" class="btn bg-red-600">Remove</button>
+</td>
 
-<input id="removeSapphire" placeholder="points" class="text-black w-20 px-2">
-
-<button onclick="removePoints('sapphire')" class="btn bg-red-600">- Remove</button>
-<button onclick="quickRemove('sapphire',10)" class="btn bg-red-500">-10</button>
-
+<td>
 <button onclick="resetPoints('sapphire')" class="btn bg-yellow-600">Reset</button>
+</td>
 
-</div>
+</tr>
 
-</div>
+<tr class="border-b border-gray-800">
 
-<!-- GARNET -->
-<div class="flex flex-col md:flex-row justify-between items-center gap-4">
+<td>Garnet</td>
+<td id="garnetPoints">0</td>
 
-<div>
-<p class="text-red-300 font-semibold">Garnet</p>
-<p id="garnetPoints" class="text-xl font-bold">0</p>
-</div>
+<td>
+<input id="addGarnet" class="text-black w-16 px-1">
+<button onclick="addPoints('garnet')" class="btn bg-green-600">Add</button>
+</td>
 
-<div class="flex gap-2 flex-wrap">
+<td>
+<input id="removeGarnet" class="text-black w-16 px-1">
+<button onclick="removePoints('garnet')" class="btn bg-red-600">Remove</button>
+</td>
 
-<input id="addGarnet" placeholder="points" class="text-black w-20 px-2">
-
-<button onclick="addPoints('garnet')" class="btn bg-green-600">+ Add</button>
-<button onclick="quickAdd('garnet',10)" class="btn bg-green-500">+10</button>
-
-<input id="removeGarnet" placeholder="points" class="text-black w-20 px-2">
-
-<button onclick="removePoints('garnet')" class="btn bg-red-600">- Remove</button>
-<button onclick="quickRemove('garnet',10)" class="btn bg-red-500">-10</button>
-
+<td>
 <button onclick="resetPoints('garnet')" class="btn bg-yellow-600">Reset</button>
+</td>
 
-</div>
+</tr>
 
-</div>
-
-</div>
+</table>
 
 </div>
 
 <!-- ADD REWARD -->
-<div class="card mb-8">
+<div class="card">
 
-<h2 class="text-lg md:text-xl mb-4 text-purple-300">Add Reward</h2>
+<h2 class="text-xl mb-4 text-purple-300">Add Reward</h2>
 
 <div class="flex flex-col md:flex-row gap-3">
 
 <input id="title" placeholder="Title" class="text-black p-2 flex-1">
 <input id="description" placeholder="Description" class="text-black p-2 flex-1">
-<input id="cost" placeholder="Energy Cost" class="text-black p-2 w-full md:w-32">
+<input id="cost" placeholder="Energy" class="text-black p-2 w-full md:w-32">
 
 <button onclick="addReward()" class="btn bg-purple-600">Add</button>
 
@@ -133,9 +132,9 @@ Admin Panel
 </div>
 
 <!-- REWARDS -->
-<div class="card mb-8">
+<div class="card">
 
-<h2 class="text-lg md:text-xl mb-4 text-purple-300">Rewards</h2>
+<h2 class="text-xl mb-4 text-purple-300">Rewards</h2>
 
 <div id="rewardsList"></div>
 
@@ -148,7 +147,7 @@ Delete All Rewards
 <!-- ENERGY LEDGER -->
 <div class="card">
 
-<h2 class="text-lg md:text-xl mb-4 text-cyan-300">Energy Ledger</h2>
+<h2 class="text-xl mb-4 text-cyan-300">Energy Ledger</h2>
 
 <div id="purchaseList"></div>
 
@@ -175,18 +174,7 @@ sapphirePoints.innerText=data.sapphire;
 }
 loadPoints();
 
-/* QUICK */
-function quickAdd(type,val){
-document.getElementById(`add${capitalize(type)}`).value=val;
-addPoints(type);
-}
-
-function quickRemove(type,val){
-document.getElementById(`remove${capitalize(type)}`).value=val;
-removePoints(type);
-}
-
-/* ADD */
+/* POINT FUNCTIONS */
 async function addPoints(type){
 let val=parseInt(document.getElementById(`add${capitalize(type)}`).value)||0;
 
@@ -205,7 +193,6 @@ message:`God added ${val} energy to ${capitalize(type)}`
 loadPoints();loadPurchases();
 }
 
-/* REMOVE */
 async function removePoints(type){
 let val=parseInt(document.getElementById(`remove${capitalize(type)}`).value)||0;
 
@@ -224,7 +211,6 @@ message:`God removed ${val} energy from ${capitalize(type)}`
 loadPoints();loadPurchases();
 }
 
-/* RESET */
 async function resetPoints(type){
 await client.from("users_data").update({[type]:0}).eq("id",1);
 loadPoints();
@@ -237,6 +223,7 @@ return s.charAt(0).toUpperCase()+s.slice(1);
 /* REWARDS */
 async function loadRewards(){
 let {data}=await client.from("rewards").select("*");
+
 let c=document.getElementById("rewardsList");
 c.innerHTML="";
 
@@ -282,13 +269,34 @@ data.forEach(p=>{
 let msg = p.message || `Action performed (ID: ${p.id})`;
 
 c.innerHTML+=`
-<div class="flex justify-between border-b border-gray-800 py-3">
+<div class="flex flex-col md:flex-row md:justify-between md:items-center border-b border-gray-800 py-3 gap-2">
+
 <span>${msg}</span>
-<span class="text-gray-400 text-sm">${new Date(p.created_at).toLocaleString()}</span>
+
+<div class="flex items-center gap-4">
+
+<span class="text-gray-400 text-xs md:text-sm">
+${new Date(p.created_at).toLocaleString()}
+</span>
+
+<button onclick="deletePurchase(${p.id})"
+class="text-red-400 hover:text-red-600 text-xs md:text-sm">
+Delete
+</button>
+
+</div>
+
 </div>`;
 });
 }
 loadPurchases();
+
+async function deletePurchase(id){
+if(confirm("Delete this entry?")){
+await client.from("purchases").delete().eq("id",id);
+loadPurchases();
+}
+}
 
 async function deleteAllPurchases(){
 if(confirm("Delete all ledger?")){
