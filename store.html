@@ -70,7 +70,7 @@ text-shadow:
 <body class="text-white">
 
 <!-- ROLE POPUP -->
-<div id="rolePopup" class="fixed inset-0 z-50 flex items-center justify-center"
+<div id="rolePopup" class="fixed inset-0 z-50 items-center justify-center hidden"
 style="background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);">
 
 <div class="bg-purple-900 bg-opacity-40 backdrop-blur-xl border border-purple-400/40 p-8 rounded-2xl text-center shadow-xl">
@@ -181,11 +181,14 @@ navigator.vibrate([120,60,120]);
 }
 
 /* POPUP CONTROL */
-window.addEventListener("load", () => {
+window.addEventListener("DOMContentLoaded", () => {
+const popup = document.getElementById("rolePopup");
+
 if(!USER_TYPE){
-document.getElementById("rolePopup").style.display = "flex";
+popup.classList.remove("hidden");
+popup.classList.add("flex");
 } else {
-document.getElementById("rolePopup").style.display = "none";
+popup.classList.add("hidden");
 updateUserStatus();
 }
 });
@@ -193,8 +196,12 @@ updateUserStatus();
 /* SELECT ROLE */
 function selectRole(role){
 USER_TYPE = role;
+localStorage.setItem("userType", role);
 
-document.getElementById("rolePopup").style.display = "none";
+const popup = document.getElementById("rolePopup");
+popup.classList.add("hidden");
+popup.classList.remove("flex");
+
 updateUserStatus();
 }
 
@@ -482,7 +489,11 @@ animate();
 
 function changeRole(){
 USER_TYPE = null;
-document.getElementById("rolePopup").style.display = "flex";
+localStorage.removeItem("userType");
+
+const popup = document.getElementById("rolePopup");
+popup.classList.remove("hidden");
+popup.classList.add("flex");
 }
 
 function showToast(message){
