@@ -60,23 +60,31 @@ transform:scale(1.05);
 
 <table class="w-full text-left table-fixed">
 <tr>
-<th class="w-1/5">Name</th>
-<th class="w-1/5">Points</th>
-<th class="w-1/5">Add</th>
-<th class="w-1/5">Remove</th>
-<th class="w-1/5">Reset</th>
+<th class="w-1/6">Name</th>
+<th class="w-1/6">Points</th>
+<th class="w-1/4">Add</th>
+<th class="w-1/4">Remove</th>
+<th class="w-1/6">Reset</th>
 </tr>
 
 <tr>
 <td class="py-2">Sapphire</td>
 <td id="sapphirePoints">0</td>
 <td>
-<input id="addSapphire" class="text-black w-16">
-<button onclick="addPoints('sapphire')" class="btn bg-green-600">Add</button>
+<div class="flex items-center gap-2">
+  <input id="addSapphire" class="text-black w-20 px-2 py-1 rounded">
+  <button onclick="addPoints('sapphire')" class="btn bg-green-600">
+    Add
+  </button>
+</div>
 </td>
 <td>
-<input id="removeSapphire" class="text-black w-16">
-<button onclick="removePoints('sapphire')" class="btn bg-red-600">Remove</button>
+<div class="flex items-center gap-2">
+  <input id="removeSapphire" class="text-black w-20 px-2 py-1 rounded">
+  <button onclick="removePoints('sapphire')" class="btn bg-red-600">
+    Remove
+  </button>
+</div>
 </td>
 <td>
 <button onclick="resetPoints('sapphire')" class="btn bg-yellow-600">Reset</button>
@@ -87,12 +95,20 @@ transform:scale(1.05);
 <td class="py-2">Garnet</td>
 <td id="garnetPoints">0</td>
 <td>
-<input id="addGarnet" class="text-black w-16">
-<button onclick="addPoints('garnet')" class="btn bg-green-600">Add</button>
+<div class="flex items-center gap-2">
+  <input id="addGarnet" class="text-black w-20 px-2 py-1 rounded">
+  <button onclick="addPoints('sapphire')" class="btn bg-green-600">
+    Add
+  </button>
+</div>
 </td>
 <td>
-<input id="removeGarnet" class="text-black w-16">
-<button onclick="removePoints('garnet')" class="btn bg-red-600">Remove</button>
+<div class="flex items-center gap-2">
+  <input id="removeGarnet" class="text-black w-20 px-2 py-1 rounded">
+  <button onclick="removePoints('sapphire')" class="btn bg-red-600">
+    Remove
+  </button>
+</div>
 </td>
 <td>
 <button onclick="resetPoints('garnet')" class="btn bg-yellow-600">Reset</button>
