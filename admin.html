@@ -58,6 +58,7 @@ transform:scale(1.05);
 <div class="card">
 <h2 class="text-xl mb-4 text-cyan-300">Users</h2>
 
+<div class="overflow-x-auto">
 <table class="w-full text-left table-fixed">
 <tr>
 <th class="w-1/6">Name</th>
@@ -70,51 +71,69 @@ transform:scale(1.05);
 <tr>
 <td class="py-2">Sapphire</td>
 <td id="sapphirePoints">0</td>
+
 <td>
-<div class="flex items-center gap-2">
-  <input id="addSapphire" class="text-black w-20 px-2 py-1 rounded">
-  <button onclick="addPoints('sapphire')" class="btn bg-green-600 whitespace-nowrap">
+<div class="flex flex-col sm:flex-row gap-2">
+  <input id="addSapphire" class="text-black w-full sm:w-20 px-2 py-1 rounded">
+  <button onclick="addPoints('sapphire')" 
+  class="btn bg-green-600 w-full sm:w-auto whitespace-nowrap">
     Add
   </button>
 </div>
 </td>
+
 <td>
-<div class="flex items-center gap-2">
-  <input id="removeSapphire" class="text-black w-20 px-2 py-1 rounded">
-  <button onclick="removePoints('sapphire')" class="btn bg-red-600 whitespace-nowrap">
+<div class="flex flex-col sm:flex-row gap-2">
+  <input id="removeSapphire" class="text-black w-full sm:w-20 px-2 py-1 rounded">
+  <button onclick="removePoints('sapphire')" 
+  class="btn bg-red-600 w-full sm:w-auto whitespace-nowrap">
     Remove
   </button>
 </div>
 </td>
+
 <td>
-<button onclick="resetPoints('sapphire')" class="btn bg-yellow-600 whitespace-nowrap">Reset</button>
+<button onclick="resetPoints('sapphire')" 
+class="btn bg-yellow-600 w-full sm:w-auto whitespace-nowrap">
+Reset
+</button>
 </td>
 </tr>
 
 <tr>
 <td class="py-2">Garnet</td>
 <td id="garnetPoints">0</td>
+
 <td>
-<div class="flex items-center gap-2">
-  <input id="addGarnet" class="text-black w-20 px-2 py-1 rounded">
-  <button onclick="addPoints('Garnet')" class="btn bg-green-600 whitespace-nowrap">
+<div class="flex flex-col sm:flex-row gap-2">
+  <input id="addGarnet" class="text-black w-full sm:w-20 px-2 py-1 rounded">
+  <button onclick="addPoints('Garnet')" 
+  class="btn bg-green-600 w-full sm:w-auto whitespace-nowrap">
     Add
   </button>
 </div>
 </td>
+
 <td>
-<div class="flex items-center gap-2">
-  <input id="removeGarnet" class="text-black w-20 px-2 py-1 rounded">
-  <button onclick="removePoints('sapphire')" class="btn bg-red-600 whitespace-nowrap">
+<div class="flex flex-col sm:flex-row gap-2">
+  <input id="removeGarnet" class="text-black w-full sm:w-20 px-2 py-1 rounded">
+  <button onclick="removePoints('garnet')" 
+  class="btn bg-red-600 w-full sm:w-auto whitespace-nowrap">
     Remove
   </button>
 </div>
 </td>
+
 <td>
-<button onclick="resetPoints('garnet')" class="btn bg-yellow-600 whitespace-nowrap">Reset</button>
+<button onclick="resetPoints('garnet')" 
+class="btn bg-yellow-600 w-full sm:w-auto whitespace-nowrap">
+Reset
+</button>
 </td>
 </tr>
+
 </table>
+</div>
 </div>
 
 <!-- ADD REWARD -->
